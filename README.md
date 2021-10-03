@@ -1,13 +1,13 @@
 # 开发环境
 
 - 操作系统（开发）：Windows 10
-
 - 操作系统（数据库等）：[CentOS 7](https://mirrors.aliyun.com/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-2009.iso?spm=a2c6h.25603864.0.0.74092d1cfur2hR)
 - 操作系统静态IP：192.168.227.131
 - Java 8
 - Maven 3.6.3
 - IDE：Intellij IDEA 2020.3.2
 - Git：2.37.3
+- Spring Boot 2.7.3
 
 ## [安装Docker](https://docs.docker.com/engine/install/centos/)
 
@@ -203,3 +203,34 @@ sudo docker update redis -- restart=always
 
 - Lombok：简化Java Bean的开发。
 - MyBatisX：由MyBatisPlus开发，可以从mapper方法快速定位到XML文件。
+- Gitee：用于向码云提交代码。
+
+# 项目初始化
+
+## 项目结构创建
+
+在项目中添加微服务模块（都是SpringBoot项目）。
+
+- 商品模块（Group：`com.example.mall`，Artifact：`mall-product`，Description：商城-商品服务，Package：`com.example.mall.product`）。
+- 仓储模块（Group：`com.example.mall`，Artifact：`mall-ware`，Description：商城-仓储服务，Package：`com.example.mall.ware`）。
+- 订单模块（Group：`com.example.mall`，Artifact：`mall-order`，Description：商城-订单服务，Package：`com.example.mall.order`）。
+- 优惠券模块（Group：`com.example.mall`，Artifact：`mall-coupon`，Description：商城-优惠券服务，Package：`com.example.mall.coupon`）。
+- 用户模块（Group：`com.example.mall`，Artifact：`mall-member`，Description：商城-用户服务，Package：`com.example.mall.member`）。
+
+所有模块都导入Spring Web与Openfeign（用于微服务间的互相调用）依赖。
+
+最后在项目（的`pom.xml`文件）中聚合这些模块，并将项目添加到Maven中。
+
+## 数据库初始化
+
+表设计的最大特点是表之间不管关系多复杂，不会建立外键，因为电商系统中数据量超大，外键关联非常耗费数据库性能（插入或删除数据要检查外键，来保证数据的一致性与完整性）。
+
+导入以下SQL到与文件名（不包括后缀名）同名的数据库中：
+
+- [mall_oms.sql](resources/db/mall_oms.sql)（订单系统，对应mall-order模块）
+- [mall_pms.sql](resources/db/mall_pms.sql)（商品系统，对应mall-product模块）
+- [mall_sms.sql](resources/db/mall_sms.sql)（营销系统，对应mall-coupon模块）
+- [mall_ums.sql](resources/db/mall_ums.sql)（用户系统，对应mall-member模块）
+- [mall_wms.sql](resources/db/mall_wms.sql)（库存系统，对应mall-ware模块）。
+
+编码统一选择`utf8mb4`（兼容UTF8并解决一些字符乱码问题）。
