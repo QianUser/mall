@@ -234,3 +234,11 @@ sudo docker update redis -- restart=always
 - [mall_wms.sql](resources/db/mall_wms.sql)（库存系统，对应mall-ware模块）。
 
 编码统一选择`utf8mb4`（兼容UTF8并解决一些字符乱码问题）。
+
+# 快速开发
+
+## 人人开源搭建后台管理系统
+
+`clone` [renren-fast](https://gitee.com/renrenio/renren-fast)项目，删除.git文件夹，放到工程目录下，加入到项目模块中。
+
+将[db/mysql.sql](renren-fast/db/mysql.sql)导入数据库mall_admin，设置编码为`utf8mb4`。
