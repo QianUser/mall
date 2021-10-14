@@ -260,3 +260,19 @@ node -v
 ```sh
 npm config set registry http://registry.npm.taobao.org/
 ```
+
+进入renren-fast-vue目录下，输入以下命令，下载前端依赖的所有组件：
+
+```sh
+npm install
+```
+
+这些依赖是通过`package.json`文件指定的，下载完成后所有依赖信息存在于`node_modules`文件夹中。
+
+运行项目：
+
+```sh
+npm run dev
+```
+
+这样就可以访问前端项目了：`http://localhost:8001`。所有请求都会发送到renren-fast后端。登录账号与密码默认都是`admin`。
