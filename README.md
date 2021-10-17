@@ -280,3 +280,7 @@ npm run dev
 ## 逆向工程搭建与使用
 
 `clone` [renren-generator](https://gitee.com/renrenio/renren-generator)项目，删除.git文件夹，放到工程目录下，加入到项目模块中。
+
+配置完成后，启动项目。访问`http://localhost`，选中所有表，生成代码。将生成的main文件夹粘贴到gulimall-product模块的src文件夹下。目前用不到前端代码（resources目录下的src文件夹），可以删除它。
+
+创建名为`mall-common`的Maven模块，提供微服务公共需要的功能。在mall-common模块中导入相关依赖，或拷贝renren-fast模块下的相应类，可以使得生成的代码编译通过。
