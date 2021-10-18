@@ -202,7 +202,7 @@ sudo docker update redis -- restart=always
 后端插件：
 
 - Lombok：简化Java Bean的开发。
-- MyBatisX：由MyBatisPlus开发，可以从mapper方法快速定位到XML文件。
+- MyBatisX：由MyBatis-Plus开发，可以从mapper方法快速定位到XML文件。
 - Gitee：用于向码云提交代码。
 
 # 项目初始化
@@ -284,3 +284,9 @@ npm run dev
 配置完成后，启动项目。访问`http://localhost`，选中所有表，生成代码。将生成的main文件夹粘贴到gulimall-product模块的src文件夹下。目前用不到前端代码（resources目录下的src文件夹），可以删除它。
 
 创建名为`mall-common`的Maven模块，提供微服务公共需要的功能。在mall-common模块中导入相关依赖，或拷贝renren-fast模块下的相应类，可以使得生成的代码编译通过。
+
+## 配置与测试微服务基本CRUD功能
+
+整合MyBatis-Plus参考[快速开始](https://baomidou.com/pages/226c21/#%E9%85%8D%E7%BD%AE)。
+
+注意[驱动版本与数据库版本要兼容](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-versions.html)。
