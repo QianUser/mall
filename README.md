@@ -290,3 +290,32 @@ npm run dev
 整合MyBatis-Plus参考[快速开始](https://baomidou.com/pages/226c21/#%E9%85%8D%E7%BD%AE)。
 
 注意[驱动版本与数据库版本要兼容](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-versions.html)。
+
+# 分布式组件
+
+本项目，结合[Spring Cloud](https://spring.io/projects/spring-cloud)与[SpringCloud Alibaba](https://github.com/alibaba/spring-cloud-alibaba)（中文文档：[Spring Cloud Alibaba](https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md)），微服务的技术搭配方案如下：
+
+- SpringCloud Alibaba - Nacos：注册中心（服务发现/注册）。
+- SpringCloud Alibaba - Nacos：配置中心（动态配置管理）。
+- SpringCloud - Ribbon：负载均衡。
+- SpringCloud - Feign：声明式HTTP客户端（调用远程服务）。
+- SpringCloud Alibaba - Sentinel：服务容错（限流、降级、熔断）。
+- SpringCloud - Gateway：API网关（webflux 编程模式）。
+- SpringCloud - Sleuth：调用链监控。
+- SpringCloud Alibaba - Seata：原Fescar，即分布式事务解决方案。
+
+使用Spring Cloud Alibaba的原因在于，SpringCloud的几大痛点：
+
+- SpringCloud部分组件停止维护和更新，给开发带来不便。
+
+- SpringCloud部分环境搭建复杂，没有完善的可视化界面，我们需要大量的二次开发和定制。
+
+- SpringCloud配置复杂，难以上手，部分配置差别难以区分和合理应用。
+
+SpringCloud Alibaba的优势：
+
+- 阿里使用过的组件经历了考验，性能强悍，设计合理，现在开源出来大家用。
+- 成套的产品搭配完善的可视化界面给开发运维带来极大的便利。
+- 搭建简单，学习曲线低。
+
+SpringCloud Alibaba的全线产品也在[SpringCloud](https://spring.io/projects/spring-cloud-alibaba)官方网站中介绍。
