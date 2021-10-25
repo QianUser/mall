@@ -319,3 +319,15 @@ SpringCloud Alibaba的优势：
 - 搭建简单，学习曲线低。
 
 SpringCloud Alibaba的全线产品也在[SpringCloud](https://spring.io/projects/spring-cloud-alibaba)官方网站中介绍。
+
+## Nacos注册中心
+
+参考[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)。
+
+`spring-cloud-starter-alibaba-nacos-discovery`使用`2.1.0.RELEASE`版本的，如果不指定版本可能导致MyBatis-Plus报错。
+
+Nacos Server使用2.1.1版本，运行在Windows环境下。
+
+进入Nacos Server的bin目录，使用`startup.cmd -m standalone`命令启动Nacos Server（直接双击startup.cmd文件可能出错）。
+
+访问`http://localhost:8848/nacos`，登录注册中心。用户名与密码默认都是`nacos`。
