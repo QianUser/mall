@@ -351,3 +351,89 @@ SpringCloudFeign在NetflixFeign的基础上扩展了对SpringMVC注解的支持�
 然后就可以调用该接口获取所需请求。
 
 如果被调用服务未上线（例如直接关闭它），则服务注册中心中它的健康实例数将为0，且访问该服务出现异常。重新上线，则恢复正常。
+
+## Nacos配置中心
+
+参考[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)。注意引入`spring-cloud-starter-bootstrap`依赖。
+
+服务启动默认会读取`[服务名].properties`配置文件。可以给配置中心默认添加一个数据集（Data Id），命名规则为：`[服务名].properties`，并在其中添加任何配置。
+
+要动态获取并刷新配置，则需要两个注解：
+
+- 在对应的`Controller`上添加`org.springframework.cloud.context.config.annotation.RefreshScope`注解，用于动态获取并刷新配置。
+
+- 使用`@org.springframework.beans.factory.annotation.Value;("${[配置项名称]}")`注解获取配置。
+
+如果配置中心和当前应用的配置文件中都配置了相同的项，优先使用配置中心的配置。
+
+### 命名空间与配置分组
+
+#### 命名空间
+
+命名空间用于进行租户粒度的配置隔离。不同的命名空间下，可以存在相同的 Group 或 Data ID的配置。Namespace 的常用场景之一是不同环境的配置的区分隔离，例如开发、测试与生产环境的资源（如配置、服务）隔离等。
+
+默认新增的所有配置都在`public`空间。在配置中心中可以管理命名空间以及相应配置。
+
+应用默认使用`public`空间中的配置，要想切换命名空间，在`bootstrap.properties`中指定：
+
+```properties
+spring.cloud.nacos.config.namespace=[命名空间的UUID]
+```
+
+命名空间的作用/使用：
+
+- 开发、测试、生产：利用命名空间来做环境隔离。
+- 每一个微服务之间互相隔离配置，每一个微服务都创建自己的命名空间，只加载自己命名空间下的所有配置。
+
+#### 配置集
+
+一组相关或者不相关的配置项的集合称为配置集。在系统中，一个配置文件通常就是一个配置集，包含了系统各个方面的配置。例如，一个配置集可能包含了数据源、线程池、日志级别等配置项。
+
+#### 配置集ID
+
+Nacos中的某个配置集的ID。配置集ID（即Data ID）是组织划分配置的维度之一。Data ID通常用于组织划分系统的配置集。一个系统或者应用可以包含多个配置集，每个配置集都可以被一个有意义的名称标识。Data ID通常采用类Java包（如`com.taobao.tc.refund.log.level`）的命名规则保证全局唯一性。此命名规则非强制。
+
+#### 配置分组
+
+Nacos中的一组配置集，是组织配置的维度之一。通过一个有意义的字符串（如 `Buy`或`Trade`）对配置集进行分组，从而区分Data ID相同的配置集。当在Nacos上创建一个配置时，如果未填写配置分组的名称，则配置分组的名称默认采用`DEFAULT_GROUP `。配置分组的常见场景：不同的应用或组件使用了相同的配置类型，如`database_url`配置和`MQ_topic`配置。
+
+要想切换使用的组，在`bootstrap.properties`中指定：
+
+```properties
+spring.cloud.nacos.config.group=[配置分组名称]
+```
+
+在本项目中，将会为每个微服务创建自己的命名空间，使用配置分组区分环境，如dev、test、prod环境。配置集ID采用微服务应用名。
+
+### 加载多配置集
+
+要加载多配置集（例如将数据源配置、框架配置与微服务其他配置拆分开来形成多配置集），在`bootstrap.properties`中指定：
+
+```properties
+spring.application.name=[应用名]
+spring.cloud.nacos.config.server-addr=[配置中心地址]
+spring.cloud.nacos.config.namespace=[命名空间的UUID]
+
+# 加载的默认配置文件所属的分组
+spring.cloud.nacos.config.group=[配置分组名称]
+
+# 加载第一个配置集
+spring.cloud.nacos.config.ext-config[0].data-id=[配置集ID 1]
+spring.cloud.nacos.config.ext-config[0].group-id=[配置分组名称 1]
+# 是否动态刷新，默认为false，此时应用不会获取到配置中心的最新修改
+spring.cloud.nacos.config.ext-config[0].refresh=true
+
+# 加载第二个配置集
+spring.cloud.nacos.config.ext-config[1].data-id=[配置集ID 2]
+spring.cloud.nacos.config.ext-config[1].group-id=[配置分组名称 2]
+spring.cloud.nacos.config.ext-config[1].refresh=true
+
+# 加载第三个配置集
+spring.cloud.nacos.config.ext-config[2].data-id=[配置集ID 3]
+spring.cloud.nacos.config.ext-config[2].group-id=[配置分组名称 3]
+spring.cloud.nacos.config.ext-config[2].refresh=true
+```
+
+注意：如果配置中心中找不到相应配置选项，则使用本地配置文件中的配置；微服务启动会读取`[服务名].properties`配置文件，如果没有为其指定分组，则默认其位于`public`组。
+
+微服务任何配置信息、任何配置文件都可以放在配置中心中，只需要在`bootstrap.properties`中说明加载配置中心中哪些配置文件即可。以前SpringBoot任何方法从配置文件中获取值的方法（例如`@Value`、`@ConfigurationProperties`），都能使用。配置中心有的优先使用配置中心中的。
