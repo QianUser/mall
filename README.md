@@ -281,7 +281,7 @@ npm run dev
 
 `clone` [renren-generator](https://gitee.com/renrenio/renren-generator)项目，删除.git文件夹，放到工程目录下，加入到项目模块中。
 
-配置完成后，启动项目。访问`http://localhost`，选中所有表，生成代码。将生成的main文件夹粘贴到gulimall-product模块的src文件夹下。目前用不到前端代码（resources目录下的src文件夹），可以删除它。
+配置完成后，启动项目。访问`http://localhost`，选中所有表，生成代码。将生成的main文件夹粘贴到mall-product模块的src文件夹下。目前用不到前端代码（resources目录下的src文件夹），可以删除它。
 
 创建名为`mall-common`的Maven模块，提供微服务公共需要的功能。在mall-common模块中导入相关依赖，或拷贝renren-fast模块下的相应类，可以使得生成的代码编译通过。
 
@@ -437,3 +437,44 @@ spring.cloud.nacos.config.ext-config[2].refresh=true
 注意：如果配置中心中找不到相应配置选项，则使用本地配置文件中的配置；微服务启动会读取`[服务名].properties`配置文件，如果没有为其指定分组，则默认其位于`public`组。
 
 微服务任何配置信息、任何配置文件都可以放在配置中心中，只需要在`bootstrap.properties`中说明加载配置中心中哪些配置文件即可。以前SpringBoot任何方法从配置文件中获取值的方法（例如`@Value`、`@ConfigurationProperties`），都能使用。配置中心有的优先使用配置中心中的。
+
+## 网关
+
+网关作为流量的入口，常用功能包括路由转发、权限校验、限流控制等。而 [SpringCloud Gateway](https://spring.io/projects/spring-cloud-gateway)作为SpringCloud官方推出的第二代网关框架，取代了Zuul。官方文档见[Spring Cloud Gateway](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/)。
+
+### 为什么使用API网关
+
+API网关出现的原因是微服务架构的出现，不同的微服务一般会有不同的网络地址，而外部 客户端可能需要调用多个服务的接口才能完成一个业务需求，如果让客户端直接与各个微服务通信，会有以下的问题：
+
+- 客户端会多次请求不同的微服务，增加了客户端的复杂性。 
+- 存在跨域请求，在一定场景下处理相对复杂。 
+- 认证复杂，每个服务都需要独立认证。 
+- 难以重构，随着项目的迭代，可能需要重新划分微服务。例如，可能将多个服务合 并成一个或者将一个服务拆分成多个。如果客户端直接与微服务通信，那么重构将 会很难实施。 
+- 某些微服务可能使用了防火墙或浏览器不友好的协议，直接访问会有一定的困难。
+
+以上这些问题可以借助API网关解决。API网关是介于客户端和服务器端之间的中间层， 所有的外部请求都会先经过API网关这一层。也就是说，API 的实现方面更多的考虑业务 逻辑，而安全、性能、监控可以交由 API 网关来做，这样既提高业务灵活性又不缺安全性。 使用API网关后的优点如下：
+
+- 易于监控。可以在网关收集监控数据并将其推送到外部系统进行分析。 
+
+- 易于认证。可以在网关上进行认证，然后再将请求转发到后端的微服务，而无须在 每个微服务中进行认证。
+- 减少了客户端与各个微服务之间的交互次数。
+
+### [核心概念](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#glossary)
+
+- 路由（Route）。路由是网关最基础的部分，路由信息有一个ID、一个目的URL、一组断言和一组Filter组成。如果断言路由为真，则说明请求的URL和配置匹配。
+- [断言（Predicate）](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories)。Java8中的断言函数。Spring Cloud Gateway中的断言函数输入类型是Spring5.0框 架中的ServerWebExchange。Spring Cloud Gateway中的断言函数允许开发者去定义匹配来自于HTTP request中的任何信息，比如请求头和参数等。
+- [过滤器（Filter）](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gatewayfilter-factories)。一个标准的 Spring webFilter。Spring Cloud Gateway中的过滤器分为两种类型，分别是Gateway Filter和Global Filter。过滤器将会对请求和响应进行修改处理。
+
+[工作原理](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-how-it-works)是：客户端发送请求给网关，Gateway Handler Mapping判断该请求是否满足某个路由，满足就发给网关的Gateway Web Handler。这个Gateway Web Handler将请求交给一个过滤器链，请求到达目标服务之前，会执行所有过滤器的`pre`方法。请求到达目标服务处理之后再依次执行所有过滤器的`post`方法。
+
+![网关工作原理](resources\images\网关工作原理.png)
+
+### 创建并测试API网关
+
+创建网关模块（Group：`com.example.mall`，Artifact：`mall-gateway`，Description：API网关，Package：`com.example.mall.gateway`），设置相关配置。
+
+修改启动类的注解：`@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})`，排除数据库有关自动配置（或者在引入依赖时排除MyBatisPlus相关配置），否则启动异常（引入MyBatisPlus相关操作会产生数据源相关的自动配置，而该模块暂时没有用到数据源）。
+
+根据[官方文档过滤器配置](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-addrequestparameter-gatewayfilter-factory)与[官方文档断言配置](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-query-route-predicate-factory)，实现功能：如果请求参数中包含参数`url=baidu`，则转到`www.baidu.com`，如果请求参数中包含`url=qq`，则转到`www.qq.com`。
+
+注意，转发请求时会携带URI。例如访问`localhost:88/hello?url=qq`，会转到`www.qq.com/hello`，这可能会出现404页面。
