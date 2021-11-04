@@ -205,6 +205,10 @@ sudo docker update redis -- restart=always
 - MyBatisX：由MyBatis-Plus开发，可以从mapper方法快速定位到XML文件。
 - Gitee：用于向码云提交代码。
 
+前端插件：
+
+- Vue.js。
+
 # 项目初始化
 
 ## 项目结构创建
@@ -241,7 +245,7 @@ sudo docker update redis -- restart=always
 
 `clone` [renren-fast](https://gitee.com/renrenio/renren-fast)项目，删除.git文件夹，放到工程目录下，加入到项目模块中。
 
-将[db/mysql.sql](renren-fast/db/mysql.sql)导入数据库mall_admin，设置编码为`utf8mb4`。
+将[mysql.sql](renren-fast/db/mysql.sql)导入数据库mall_admin，设置编码为`utf8mb4`。
 
 启动renren-fast模块。这样就可以访问`localhost:8080/renren-fast/`了，但是它还需要前端项目来互相发送请求。
 
@@ -478,3 +482,69 @@ API网关出现的原因是微服务架构的出现，不同的微服务一般�
 根据[官方文档过滤器配置](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-addrequestparameter-gatewayfilter-factory)与[官方文档断言配置](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-query-route-predicate-factory)，实现功能：如果请求参数中包含参数`url=baidu`，则转到`www.baidu.com`，如果请求参数中包含`url=qq`，则转到`www.qq.com`。
 
 注意，转发请求时会携带URI。例如访问`localhost:88/hello?url=qq`，会转到`www.qq.com/hello`，这可能会出现404页面。
+
+# 商品服务
+
+## 三级分类
+
+### 递归树形结构数据获取
+
+将[pms_catelog](db/pms_catelog.sql)导入数据库mall_pms。
+
+### 配置网关路由与路径重写
+
+启动`renren-fast`模块；启动前端项目`renren-fast-vue`。
+
+[^备注]: 如果编译报错`You aren‘t using a compiler supported by lombok, so lombok will not work and has been disabled.`，则进入`File`$\rightarrow$`Settings`$\rightarrow$`Build, Execution Deployment`$\rightarrow$`compiler`$，设置`Shared build process VM options`为`-Djps.track.ap.dependencies=false`。
+
+在前端的菜单管理中添加一个一级目录（上级菜单为一级菜单）：商品系统，并在其中添加一个菜单：分类维护，路由为`product/category`（这些信息会记录到`mall_admin`数据库的`sys_menu`表中）。路由的`/`在URL中被替换为`-`，而相应的Vue文件则保存在`src\views\modules`文件夹中。例如以上菜单的URL为`product-category`，Vue文件路径为`src\views\modules\product\category.vue`。
+
+前端项目的请求会发送给网关，网关再将请求转给特定的后端服务。
+
+全部配置完成后，重新启动`renren-fast`模块，并启动`mall-gateway`模块。访问`localhost:8001/#/login`，可以正常进入登录界面（正确生成验证码）。但是无法登录，因为跨域请求被拒绝（403）。
+
+### 网关统一配置跨域
+
+跨域指的是浏览器不能执行其他网站的脚本。它是由浏览器的同源策略造成的，是浏览器对JavaScript施加的安全限制。
+
+同源策略：是指协议，域名，端口都要相同，其中有一个不同都会产生跨域。注意，即使两个请求分别使用了域名与域名对应的IP，它们也属于不同源的请求。
+
+以上访问产生跨域请求为非简单请求（因为`Content-Type`为`application/json`），会先发送预检请求（Request Method：`OPTIONS`）。发送[非简单请求](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS)时，成功跨域的流程如下：
+
+- 浏览器首先发送预检请求（OPTIONS）。
+- 服务器响应允许跨域。
+- 浏览器发送真实请求。
+- 服务器响应数据。
+
+要解决跨域，一种方式是使用Nginx将请求的网站与目标网站部署为同一域。即将前端项目与网关部署为同一域。浏览器通过访问Nginx地址访问前端项目，然后Nginx将静态请求代理到前端项目，将动态请求（带`/api`前缀）代理到网关，网关转到其他服务。
+
+另一种方法是配置当次请求允许跨域，添加响应头：
+
+- `Access-Control-Allow-Origin`：支持哪些来源的请求跨域 。
+- `Access-Control-Allow-Methods`：支持哪些方法跨域。
+- `Access-Control-Allow-Credentials`：跨域请求默认不包含cookie，设置为`true`可以包含cookie。
+- `Access-Control-Expose-Headers`：跨域请求暴露的字段。
+  - 跨源资源共享（CORS）请求时，`XMLHttpRequest`对象的`getResponseHeader`方法只能拿到6个基本字段： `Cache-Control`、`Content-Language`、`Content-Type`、`Expires`、`Last-Modified`与`Pragma`。如 果想拿到其他字段，就必须在`Access-Control-Expose-Headers`里面指定。
+- `Access-Control-Max-Age`：表明该响应的有效时间为多少秒。在有效时间内，浏览器无 须为同一请求再次发起预检请求。请注意，浏览器自身维护了一个最大有效时间，如果该首部字段的值超过了最大有效时间，将不会生效。
+
+为了便于统一管理，可以在过滤器中配置这些响应头。过滤器放行请求，响应返回给浏览器前添加以上字段。且过滤器只应该在网关中设置。
+
+重启`mall-gateway`与`renren-fast`模块。登录`localhost:8001/#/login`。可以看到发送两个`login`请求。第一个请求是预检请求，响应头中有相应字段（而不仅仅是`content-length: 0`）。
+
+### 功能实现
+
+三级分类的功能包括：
+
+- 树形展示三级分类数据：前端开发使用[ElementUI](https://element.eleme.io/#/zh-CN)组件库：[Tree 树形控件](https://element.eleme.io/#/zh-CN/component/tree)。注意网关的路由配置注意配置顺序，越靠前的配置优先级越高。
+
+- 删除：可以使用ElementUI的[render-content或scoped slot](https://element.eleme.cn/#/zh-CN/component/tree#zi-ding-yi-jie-dian-nei-rong)实现删除效果，这里使用scoped slot。注意：只有一级或二级分类才可以追加节点，只有叶节点才可以被删除。没有子节点的一、二级分类既可以追加节点也可以被删除。
+  - 这里采用逻辑删除。所谓逻辑删除，就是通过某个字段表明该条记录是否相当于被删除，而不是直接将该条记录删除。要实现逻辑删除，参考[逻辑删除](https://baomidou.com/pages/6b03c5/)。
+  - 使用ElementUI的[Button 按钮](https://element.eleme.io/#/zh-CN/component/button)，实现批量删除效果。
+
+- 新增：使用ElementUI的[Dialog 对话框](https://element.eleme.io/#/zh-CN/component/dialog)实现新增效果。
+
+- 修改：使用同样的对话框实现修改效果，并通过`dialogType`属性确认对话框用于新增还是删除。
+
+- 拖拽效果：要求节点拖拽后其层级不能大于3。
+  - 这里使用ElementUI的[Switch 开关](https://element.eleme.io/#/zh-CN/component/switch)与[Button 按钮](https://element.eleme.io/#/zh-CN/component/button)，实现批量拖拽效果。
+
