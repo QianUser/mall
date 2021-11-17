@@ -602,5 +602,29 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 - 使用JSR303分组校验：给校验注解添加属性`groups`，指定什么情况下才需要进行校验，并使用`import org.springframework.validation.annotation.Validated`注解代替`Valid`注解。注意：默认情况下，没有指定分组的校验注解，在分组校验情况下不生效，只会在不分组（`@Validated`不指定`value`）的情况下生效。
 - 对于复杂的校验功能，使用JSR303自定义校验注解。方法是：编写自定义校验注解（在JSR303规范中，校验注解必须拥有三个属性：`message`、`groups`与`payload`）与自定义校验器（实现`javax.validation.ConstraintValidator`接口），并关联自定义的校验器与自定义的校验注解（通过在自定义校验注解上指定`@javax.validation.Constraint(validatedBy = [自定义校验器])`）。
 
+## SPU与SKU
 
+标准化产品单元（Standard Product Unit，SPU）是商品信息聚合的最小单位，是一组可复用、易检索的标准化信息的集合，该集合描述了一个产品的特性。
 
+库存量单位（Stock Keeping Unit，SKU） 即库存进出计量的基本单元，可以是以件、盒、托盘等为单位。SKU是大型连锁超市 DC（配送中心）物流管理的一个必要的方法。现在已经被引申为产品统一编号的简称，每种产品均对应有唯一的SKU号。
+
+每个分类下的商品共享规格参数与销售属性，只是有些商品不一定要用这个分类下全部的属性。
+
+- 属性是以三级分类组织起来的。
+- 规格参数中有些是可以提供检索的。
+- 规格参数也是基本属性，他们具有自己的分组。
+- 属性的分组也是以三级分类组织起来的。
+- 属性名确定的，但是值是每一个商品不同来决定的。
+
+在mall_pms数据库中：
+
+- pms_att：保存属性信息。
+- pms_attr_group：保存属性分组信息。
+- pms_attr_attrgroup_relation：保存属性与属性分组的关联关系。
+- pms_product_attr_value：保存商品属性值。
+- pms_spu_info：保存SPU的信息。
+- pms_sku_info：保存SKU的信息。
+- pms_sku_images：保存SKU的图片。
+- pms_sku_sale_attr_value：保存SKU的属性值。
+
+将[sys_menus.sql](resources/db/sys_menus.sql)导入数据库mall_admin，完成前端项目的多个菜单的创建。
