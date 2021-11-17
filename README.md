@@ -475,7 +475,7 @@ API网关出现的原因是微服务架构的出现，不同的微服务一般�
 
 ### 创建并测试API网关
 
-创建网关模块（Group：`com.example.mall`，Artifact：`mall-gateway`，Description：API网关，Package：`com.example.mall.gateway`），设置相关配置。
+创建SpringBoot网关模块（Group：`com.example.mall`，Artifact：`mall-gateway`，Description：API网关，Package：`com.example.mall.gateway`），设置相关配置。
 
 修改启动类的注解：`@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})`，排除数据库有关自动配置（或者在引入依赖时排除MyBatisPlus相关配置），否则启动异常（引入MyBatisPlus相关操作会产生数据源相关的自动配置，而该模块暂时没有用到数据源）。
 
@@ -547,4 +547,60 @@ API网关出现的原因是微服务架构的出现，不同的微服务一般�
 
 - 拖拽效果：要求节点拖拽后其层级不能大于3。
   - 这里使用ElementUI的[Switch 开关](https://element.eleme.io/#/zh-CN/component/switch)与[Button 按钮](https://element.eleme.io/#/zh-CN/component/button)，实现批量拖拽效果。
+
+后面的前端功能同样会使用到ElementUI的组件，不再复述。
+
+## 品牌管理
+
+品牌表见数据库mall_pms的表pms_brand。
+
+在前端的菜单管理中，创建一个菜单：品牌管理，上级菜单为商品系统，路由为`product/brand`。
+
+这里基于之前`mall-product`模块生成的逆向工程前端代码作为模板实现品牌管理前端功能（`mall-product/src/main/resources/src/views/modules/product`目录下的`brand.vue`与`brand-add-or-update.vue`文件）。
+
+### 云存储
+
+在单体系统中，文件上传后可以直接当前放在当前项目中。在分布式系统中，文件上传到一个服务器，一旦获取文件的请求负载均衡到其他服务器，则无法获取到该文件。此时上传文件应统一存储到文件存储服务器中。该文件存储服务器可以自建，例如使用FastDFS、vsftpd，缺点是搭建负载，维护成本高，前期费用高；也可以使用云存储，例如阿里云对象存储、七牛云存储，特点是即开即用，无需维护，按量收费。这里使用阿里云对象存储。
+
+登录[阿里云](https://www.aliyun.com/)，开通`对象存储 OSS`服务。创建存储空间`mall-qian`，
+
+向存储空间中上传文件有两种方式：
+
+- 普通上传方式：用户将文件上传到应用服务器（例如网关$\rightarrow$商品服务），应用服务器将图片传给OSS。账号密码保存在应用服务器，不会暴露给用户。这可能导致应用服务器负担过重，成为瓶颈。
+- 服务端签名后上传：用户向应用服务器请求上传的Policy，应用服务器利用阿里云账号与密码生成防伪签名（包含访问阿里云的授权令牌以及上传地址等信息）并返回它，用户将防伪签名以及数据上传给阿里云，由阿里云验证防伪签名并决定是否接受上传请求。这里采用第二种方式。
+
+项目使用的是第二种方式，基本使用方式参考[Java](https://help.aliyun.com/document_detail/32007.html)或[Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)。这里将其放在SpringBoot第三方模块`mall-third-party`（Group：`com.example.mall`，Artifact：`mall-third-party`，Description：第三方服务，Package：`com.example.mall.thirdparty`，导入Spring Web与Openfeign依赖）中。·
+
+创建子用户 AccessKey，登录名称与显示名称都为`mall`，访问方式选中`编程访问`，并为其添加权限：`AliyunOSSFullAccess`。
+
+服务端签名后直传参考[服务端签名后直传](https://help.aliyun.com/document_detail/31926.html)。
+
+### 文件上传
+
+OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访问。跨域规则为：
+
+- 来源：`*`。
+- 允许的方法：POST。
+- 允许的头：`*`。
+
+### 前端校验
+
+前端的表单校验参考[表单验证](https://element.eleme.io/#/zh-CN/component/form#biao-dan-yan-zheng)与[自定义校验规则](https://element.eleme.io/#/zh-CN/component/form#zi-ding-yi-xiao-yan-gui-ze)。
+
+### 后端校验
+
+后端校验使用JSR303（其规定了数据校验的相关标准），方法如下：
+
+- 给要校验的Bean添加校验注解，并定义自己的`message`提示。这些校验注解位于`javax.validation.constraints`包下（当然还有额外实现）。如果不指定`message`，则默认会取出`ValidationMessages.properties`（针对中文为：`ValidationMessages_zh_CN.properties`）中定义的内容。
+- 在需要校验的Bean上添加`javax.validation.Valid`注解，否则校验注解不起作用。还可以在校验的Bean紧跟一个`org.springframework.validation.BindingResult`注解，获取到校验的结果。
+
+如果校验不通过，会有默认的响应，返回的状态码为400。
+
+项目的后端校验逻辑如下：
+
+- 使用`com.xunqi.gulimall.product.exception.GulimallExceptionControllerAdvice`统一处理异常（注意取消需要校验的Bean上的`BindingResult`注解，让异常抛出）。
+- 使用JSR303分组校验：给校验注解添加属性`groups`，指定什么情况下才需要进行校验，并使用`import org.springframework.validation.annotation.Validated`注解代替`Valid`注解。注意：默认情况下，没有指定分组的校验注解，在分组校验情况下不生效，只会在不分组（`@Validated`不指定`value`）的情况下生效。
+- 对于复杂的校验功能，使用JSR303自定义校验注解。方法是：编写自定义校验注解（在JSR303规范中，校验注解必须拥有三个属性：`message`、`groups`与`payload`）与自定义校验器（实现`javax.validation.ConstraintValidator`接口），并关联自定义的校验器与自定义的校验注解（通过在自定义校验注解上指定`@javax.validation.Constraint(validatedBy = [自定义校验器])`）。
+
+
 
