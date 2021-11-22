@@ -11,6 +11,9 @@
         <result property="brandName" column="brand_name"/>
         <result property="catalogName" column="catalog_name"/>
     </resultMap>
+    <update id="updateCategory">
+        UPDATE pms_category_brand_relation SET catalog_name = #{name} WHERE catalog_id = #{catId}
+    </update>
 
 
 </mapper>

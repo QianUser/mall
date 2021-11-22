@@ -618,7 +618,7 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 
 在mall_pms数据库中：
 
-- pms_att：保存属性信息。
+- pms_attr：保存属性信息。
 - pms_attr_group：保存属性分组信息。
 - pms_attr_attrgroup_relation：保存属性与属性分组的关联关系。
 - pms_product_attr_value：保存商品属性值。
@@ -628,3 +628,45 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 - pms_sku_sale_attr_value：保存SKU的属性值。
 
 将[sys_menus.sql](resources/db/sys_menus.sql)导入数据库mall_admin，完成前端项目的多个菜单的创建。
+
+## 品牌管理
+
+实现品牌管理的分页功能，需要配置分页插件[分页插件](https://baomidou.com/pages/97710a/#paginationinnerinterceptor)。
+
+每个品牌可以关联多个分类，关联信息通过pms_category_brand_relation维护。在该表中，`brand_name`与`catelog_name`冗余存储，因此在修改品牌时，要解决一致性问题。否则会看到，前端修改了品牌名或分类名，查看关联分类时，该品牌名或分类名没有更新。
+
+## 平台属性
+
+### 属性分组
+
+点击三级分类分类，动态展示该分类下的分组属性，它们的关系由pms_attr_group表维护。这里涉及父子组件交互：
+
+- 子组件给父组件节点传递数据，使用事件机制。子组件通过`this.$emit("[事件名]",[携带的数据]...)`给父组件发送数据，父组件通过`@[事件名]='[回调方法]'`接收子组件发送过来的数据并触发自己的回调方法。
+
+支持分组新增、分组修改操作，并使用[Cascader 级联选择器](https://element.eleme.io/#/zh-CN/component/cascader)展示属性分组的三级分类。
+
+每个属性分组关联多个规格参数（非销售属性），可以查询、添加或删除分组关联的属性。分组与属性的关联关系由pms_attr_attrgroup_relation表维护。注意，每个分组只能关联本分类下的未被其他分组关联的属性，这些信息可以通过pms_attr_group、pms_attr_attrgroup_relation、pms_attr表得到。
+
+### 规格参数
+
+新增规格参数（由pms_attr表维护）时，注意绑定它的属性分组，这是通过pms_attr_attrgroup_relation表维护的。同样，显示与修改规格参数列表需要获取规格参数所属的分类与分组（修改规则参数列表需要查询分类的完整路径）。
+
+这里通过VO接受前端传递过来的对象：
+
+- 持久对象（Persistant Object，PO）：对应数据库中某个表中的一条记录。 PO 中应该不包含任何对数据库的操作。
+- 领域对象（Domain Object，DO）：从现实世界中抽象出来的有形或无形的业务实体。
+- 数据传输对象（Transfer Object，TO）：不同的应用程序之间传输的对象。
+- 数据传输对象（Data Transfer Object，DTO）：这个概念来源于 J2EE的设计模式，原来的目的是为了EJB的分布式应用提供粗粒度的 数据实体，以减少分布式调用的次数，从而提高分布式调用的性能和降低网络负载，但在这里，泛指用于展示层与服务层之间的数据传输对象。
+- 值对象（Value Object，VO）：通常用于业务层之间的数据传递，和PO一样也是仅仅包含数据而已，但应是抽象出的业务对象，可以和表对应，也可以不对应。在这里可以称VO为视图对象（View Object），它接受页面传递来的数据封装其为对象，同时将业务处理完成的对象封装成页面要用的数据。
+- 业务对象（Business Object，BO）：主要作用是把业务逻辑封装为一个对象。这个对象可以包括一个或多个其它的对象。 比如一个简 历，有教育经历、工作经历、社会关系等等。 可以把教育经历对应一个PO ，工作经历对应一个PO ，社会关系对应一个PO 。 建立一个对应简历的BO对象处理简历，每 个BO包含这些PO 。 这样处理业务逻辑时，我们就可以针对BO去处理。
+- 简单的Java对象（Plain Ordinary Java Object，POJO）：传统意义的Java对象。POJO 是DO、DTO、BO、VO的统称。
+- 数据访问对象（Data Access Object，DAO）：负责持久层的操作，为业务层提供接口。
+
+### 销售属性
+
+销售属性与规格参数类似。这些属性都由pms_attr表维护，其中`attr_type`字段决定了该字段表示销售属性（`0`）还是规格参数（`1`）。不考虑某个字段既是销售属性又是规格参数的情况。另外，销售属性没有分组信息。
+
+# 参考
+
+[^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
+[^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
