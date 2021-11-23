@@ -666,6 +666,10 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 
 销售属性与规格参数类似。这些属性都由pms_attr表维护，其中`attr_type`字段决定了该字段表示销售属性（`0`）还是规格参数（`1`）。不考虑某个字段既是销售属性又是规格参数的情况。另外，销售属性没有分组信息。
 
+[^纠错]: 导入所有前端项目后，执行命令：`npm install -g cnpm --registry=https://registry.npm.taobao.org`与`cnpm install --save pubsub-js`。
+
+
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
