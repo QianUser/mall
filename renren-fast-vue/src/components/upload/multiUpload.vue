@@ -91,7 +91,7 @@ export default {
           .then(response => {
             _self.dataObj.policy = response.data.policy
             _self.dataObj.signature = response.data.signature
-            _self.dataObj.ossaccessKeyId = response.data.accessid
+            _self.dataObj.ossaccessKeyId = response.data.accessId
             _self.dataObj.key = response.data.dir + getUUID() + '_' + file.name
             _self.dataObj.dir = response.data.dir
             _self.dataObj.host = response.data.host
