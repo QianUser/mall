@@ -1,8 +1,9 @@
 /*
 SQLyog Ultimate v11.25 (64 bit)
-MySQL - 5.7.27 : Database - gulimall_admin
+MySQL - 5.7.27 : Database - mall_admin
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 

@@ -4,7 +4,7 @@ Navicat MySQL Data Transfer
 Source Server         : 192.168.56.10_3306
 Source Server Version : 50727
 Source Host           : 192.168.56.10:3306
-Source Database       : gulimall_pms
+Source Database       : mall_pms
 
 Target Server Type    : MYSQL
 Target Server Version : 50727
@@ -28,7 +28,7 @@ CREATE TABLE `pms_attr` (
   `value_select` char(255) DEFAULT NULL COMMENT '可选值列表[用逗号分隔]',
   `attr_type` tinyint(4) DEFAULT NULL COMMENT '属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]',
   `enable` bigint(20) DEFAULT NULL COMMENT '启用状态[0 - 禁用，1 - 启用]',
-  `catalog_id` bigint(20) DEFAULT NULL COMMENT '所属分类',
+  `catelog_id` bigint(20) DEFAULT NULL COMMENT '所属分类',
   `show_desc` tinyint(4) DEFAULT NULL COMMENT '快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整',
   PRIMARY KEY (`attr_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COMMENT='商品属性';
@@ -80,7 +80,7 @@ CREATE TABLE `pms_attr_group` (
   `sort` int(11) DEFAULT NULL COMMENT '排序',
   `descript` varchar(255) DEFAULT NULL COMMENT '描述',
   `icon` varchar(255) DEFAULT NULL COMMENT '组图标',
-  `catalog_id` bigint(20) DEFAULT NULL COMMENT '所属分类id',
+  `catelog_id` bigint(20) DEFAULT NULL COMMENT '所属分类id',
   PRIMARY KEY (`attr_group_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='属性分组';
 
@@ -110,10 +110,10 @@ CREATE TABLE `pms_brand` (
 -- ----------------------------
 -- Records of pms_brand
 -- ----------------------------
-INSERT INTO `pms_brand` VALUES ('9', '华为', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-18/de2426bd-a689-41d0-865a-d45d1afa7cde_huawei.png', '华为', '1', 'H', '1');
-INSERT INTO `pms_brand` VALUES ('10', '小米', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-18/1f9e6968-cf92-462e-869a-4c2331a4113f_xiaomi.png', '小米', '1', 'M', '1');
-INSERT INTO `pms_brand` VALUES ('11', 'oppo', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-18/5c8303f2-8b0c-4a5b-89a6-86513133d758_oppo.png', 'oppo', '1', 'O', '1');
-INSERT INTO `pms_brand` VALUES ('12', 'Apple', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-18/819bb0b1-3ed8-4072-8304-78811a289781_apple.png', '苹果', '1', 'A', '1');
+INSERT INTO `pms_brand` VALUES ('9', '华为', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/24797e6a-cd46-4e42-8ddb-cfc3853fab3c_huawei.png', '华为', '1', 'H', '1');
+INSERT INTO `pms_brand` VALUES ('10', '小米', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/92699852-83ab-4d80-8e26-acd0a4cbf814_xiaomi.png', '小米', '1', 'M', '1');
+INSERT INTO `pms_brand` VALUES ('11', 'oppo', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c1912567-ff3f-49d8-8d62-f4b758cc12fe_oppo.png', 'oppo', '1', 'O', '1');
+INSERT INTO `pms_brand` VALUES ('12', 'Apple', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/71b0a101-e3e5-4a4e-832c-f3eb1489a201_apple.png', '苹果', '1', 'A', '1');
 
 -- ----------------------------
 -- Table structure for pms_category
@@ -1569,9 +1569,9 @@ DROP TABLE IF EXISTS `pms_category_brand_relation`;
 CREATE TABLE `pms_category_brand_relation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `brand_id` bigint(20) DEFAULT NULL COMMENT '品牌id',
-  `catalog_id` bigint(20) DEFAULT NULL COMMENT '分类id',
+  `catelog_id` bigint(20) DEFAULT NULL COMMENT '分类id',
   `brand_name` varchar(255) DEFAULT NULL,
-  `catalog_name` varchar(255) DEFAULT NULL,
+  `catelog_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COMMENT='品牌分类关联';
 
@@ -1656,18 +1656,18 @@ CREATE TABLE `pms_sku_images` (
 -- ----------------------------
 -- Records of pms_sku_images
 -- ----------------------------
-INSERT INTO `pms_sku_images` VALUES ('1', '1', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('2', '1', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/20f83b0c-86ba-4a64-808a-f2ace190ea2c_1f15cdbcf9e1273c.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('1', '1', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('2', '1', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ac21f738-fbc7-4de3-8562-769fd4e4a49e_1f15cdbcf9e1273c.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('3', '1', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('4', '1', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('5', '1', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('6', '1', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('7', '1', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('8', '1', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('9', '1', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/d12516dd-43cf-4ace-8dc9-14618d2d75e4_919c850652e98031.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('10', '1', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('11', '2', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('12', '2', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/20f83b0c-86ba-4a64-808a-f2ace190ea2c_1f15cdbcf9e1273c.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('9', '1', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/54153e07-6446-4287-81d3-91c9c11b92c5_919c850652e98031.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('10', '1', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('11', '2', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('12', '2', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ac21f738-fbc7-4de3-8562-769fd4e4a49e_1f15cdbcf9e1273c.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('13', '2', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('14', '2', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('15', '2', '', null, '0');
@@ -1675,42 +1675,42 @@ INSERT INTO `pms_sku_images` VALUES ('16', '2', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('17', '2', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('18', '2', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('19', '2', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('20', '2', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('21', '3', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('20', '2', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('21', '3', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '1');
 INSERT INTO `pms_sku_images` VALUES ('22', '3', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('23', '3', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('24', '3', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('25', '3', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('26', '3', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/099f297e-ddea-4fb5-87c7-78cd88e500c0_28f296629cca865e.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('26', '3', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/642325f8-8969-4c66-897e-13e61ca6f0a3_28f296629cca865e.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('27', '3', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('28', '3', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/7aa1019e-4e01-49dd-8ac4-7d2794d0b1a8_335b2c690e43a8f8.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('28', '3', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/70388f61-441c-423f-84cd-1e4a773ee356_335b2c690e43a8f8.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('29', '3', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('30', '3', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('31', '4', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('31', '4', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '1');
 INSERT INTO `pms_sku_images` VALUES ('32', '4', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('33', '4', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('34', '4', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('35', '4', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('36', '4', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/099f297e-ddea-4fb5-87c7-78cd88e500c0_28f296629cca865e.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('36', '4', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/642325f8-8969-4c66-897e-13e61ca6f0a3_28f296629cca865e.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('37', '4', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('38', '4', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/7aa1019e-4e01-49dd-8ac4-7d2794d0b1a8_335b2c690e43a8f8.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('38', '4', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/70388f61-441c-423f-84cd-1e4a773ee356_335b2c690e43a8f8.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('39', '4', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('40', '4', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('41', '5', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('42', '5', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/20f83b0c-86ba-4a64-808a-f2ace190ea2c_1f15cdbcf9e1273c.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('41', '5', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('42', '5', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ac21f738-fbc7-4de3-8562-769fd4e4a49e_1f15cdbcf9e1273c.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('43', '5', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('44', '5', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/9a6ba5c0-0a31-4364-8759-012bdfbf5ad3_3c24f9cd69534030.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('45', '5', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/a73ef55a-79b4-41d9-8eb6-760c8b5a33dc_23d9fbb256ea5d4a.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('44', '5', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a534e3a7-37f6-4f66-840a-9e88664fb585_3c24f9cd69534030.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('45', '5', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/07fefdd3-7c01-4a16-859f-f03dfc06d078_23d9fbb256ea5d4a.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('46', '5', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('47', '5', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('48', '5', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('49', '5', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('50', '5', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('51', '6', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('51', '6', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, '1');
 INSERT INTO `pms_sku_images` VALUES ('52', '6', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('53', '6', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('54', '6', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/9a6ba5c0-0a31-4364-8759-012bdfbf5ad3_3c24f9cd69534030.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('55', '6', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/a73ef55a-79b4-41d9-8eb6-760c8b5a33dc_23d9fbb256ea5d4a.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('54', '6', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a534e3a7-37f6-4f66-840a-9e88664fb585_3c24f9cd69534030.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('55', '6', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/07fefdd3-7c01-4a16-859f-f03dfc06d078_23d9fbb256ea5d4a.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('56', '6', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('57', '6', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('58', '6', '', null, '0');
@@ -1722,50 +1722,50 @@ INSERT INTO `pms_sku_images` VALUES ('63', '7', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('64', '7', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('65', '7', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('66', '7', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('67', '7', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/38492c9f-b0e0-4cba-87a9-77cb6189ea73_73ab4d2e818d2211.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('67', '7', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/3cac440f-c2ec-49d2-8089-2da27c3a8a36_73ab4d2e818d2211.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('68', '7', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('69', '7', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/d12516dd-43cf-4ace-8dc9-14618d2d75e4_919c850652e98031.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('70', '7', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('69', '7', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/54153e07-6446-4287-81d3-91c9c11b92c5_919c850652e98031.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('70', '7', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', null, '1');
 INSERT INTO `pms_sku_images` VALUES ('71', '8', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('72', '8', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('73', '8', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('74', '8', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('75', '8', '', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('76', '8', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('77', '8', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/38492c9f-b0e0-4cba-87a9-77cb6189ea73_73ab4d2e818d2211.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('77', '8', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/3cac440f-c2ec-49d2-8089-2da27c3a8a36_73ab4d2e818d2211.jpg', null, '0');
 INSERT INTO `pms_sku_images` VALUES ('78', '8', '', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('79', '8', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/d12516dd-43cf-4ace-8dc9-14618d2d75e4_919c850652e98031.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('80', '8', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('81', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('82', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('83', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/f968b6ac-2fca-4440-842f-8db8b76478f0_b8494bf281991f94.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('84', '10', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('85', '10', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('86', '10', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/f968b6ac-2fca-4440-842f-8db8b76478f0_b8494bf281991f94.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('87', '11', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('88', '11', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('89', '11', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/f968b6ac-2fca-4440-842f-8db8b76478f0_b8494bf281991f94.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('90', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('91', '13', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('92', '14', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('93', '15', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('94', '16', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('95', '17', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('96', '18', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('97', '19', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('98', '20', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('99', '21', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/1756fa6d-1934-4d5c-8faf-84b3d882fe53_5b5e74d0978360a1.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('100', '21', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('101', '21', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/2419c5cf-a641-4ec1-8f94-64981dc207f6_63e862164165f483.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('102', '22', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/1756fa6d-1934-4d5c-8faf-84b3d882fe53_5b5e74d0978360a1.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('103', '22', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('104', '22', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/2419c5cf-a641-4ec1-8f94-64981dc207f6_63e862164165f483.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('105', '23', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/1756fa6d-1934-4d5c-8faf-84b3d882fe53_5b5e74d0978360a1.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('106', '23', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('107', '23', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/2419c5cf-a641-4ec1-8f94-64981dc207f6_63e862164165f483.jpg', null, '0');
-INSERT INTO `pms_sku_images` VALUES ('108', '24', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('109', '25', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
-INSERT INTO `pms_sku_images` VALUES ('110', '26', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('79', '8', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/54153e07-6446-4287-81d3-91c9c11b92c5_919c850652e98031.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('80', '8', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('81', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('82', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('83', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/81ef361e-a990-4e47-8ba0-37f7e9dfc892_b8494bf281991f94.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('84', '10', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('85', '10', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('86', '10', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/81ef361e-a990-4e47-8ba0-37f7e9dfc892_b8494bf281991f94.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('87', '11', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('88', '11', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('89', '11', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/81ef361e-a990-4e47-8ba0-37f7e9dfc892_b8494bf281991f94.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('90', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('91', '13', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('92', '14', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('93', '15', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('94', '16', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('95', '17', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('96', '18', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('97', '19', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('98', '20', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('99', '21', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a7751ae0-6e20-4ef4-830f-489db09b5bf5_5b5e74d0978360a1.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('100', '21', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('101', '21', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/b4476ae6-0587-4d6c-8cc2-720ee8f1ab33_63e862164165f483.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('102', '22', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a7751ae0-6e20-4ef4-830f-489db09b5bf5_5b5e74d0978360a1.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('103', '22', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('104', '22', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/b4476ae6-0587-4d6c-8cc2-720ee8f1ab33_63e862164165f483.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('105', '23', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a7751ae0-6e20-4ef4-830f-489db09b5bf5_5b5e74d0978360a1.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('106', '23', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('107', '23', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/b4476ae6-0587-4d6c-8cc2-720ee8f1ab33_63e862164165f483.jpg', null, '0');
+INSERT INTO `pms_sku_images` VALUES ('108', '24', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('109', '25', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
+INSERT INTO `pms_sku_images` VALUES ('110', '26', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, '1');
 
 -- ----------------------------
 -- Table structure for pms_sku_info
@@ -1789,32 +1789,32 @@ CREATE TABLE `pms_sku_info` (
 -- ----------------------------
 -- Records of pms_sku_info
 -- ----------------------------
-INSERT INTO `pms_sku_info` VALUES ('1', '11', '华为 HUAWEI Mate 30 Pro 星河银 8GB+256GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 星河银 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('2', '11', '华为 HUAWEI Mate 30 Pro 星河银 8GB+128GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 星河银 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('3', '11', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+256GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('4', '11', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+128GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('5', '11', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+256GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('6', '11', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+128GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('7', '11', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+256GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('8', '11', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+128GB', null, '225', '9', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('9', '13', ' Apple iPhone 11 (A2223)  黑色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 128GB 移动联通电信4G手机 双卡双待 最后几件优惠', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('10', '13', ' Apple iPhone 11 (A2223)  黑色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 256GB 移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('11', '13', ' Apple iPhone 11 (A2223)  黑色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('12', '13', ' Apple iPhone 11 (A2223)  白色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('13', '13', ' Apple iPhone 11 (A2223)  白色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('14', '13', ' Apple iPhone 11 (A2223)  白色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('15', '13', ' Apple iPhone 11 (A2223)  绿色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('16', '13', ' Apple iPhone 11 (A2223)  绿色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('17', '13', ' Apple iPhone 11 (A2223)  绿色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('18', '13', ' Apple iPhone 11 (A2223)  黄色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('19', '13', ' Apple iPhone 11 (A2223)  黄色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('20', '13', ' Apple iPhone 11 (A2223)  黄色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('21', '13', ' Apple iPhone 11 (A2223)  红色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('22', '13', ' Apple iPhone 11 (A2223)  红色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('23', '13', ' Apple iPhone 11 (A2223)  红色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('24', '13', ' Apple iPhone 11 (A2223)  紫色 128GB ', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('25', '13', ' Apple iPhone 11 (A2223)  紫色 256GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
-INSERT INTO `pms_sku_info` VALUES ('26', '13', ' Apple iPhone 11 (A2223)  紫色 64GB', null, '225', '12', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('1', '11', '华为 HUAWEI Mate 30 Pro 星河银 8GB+256GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 星河银 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('2', '11', '华为 HUAWEI Mate 30 Pro 星河银 8GB+128GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 星河银 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('3', '11', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+256GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('4', '11', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+128GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 亮黑色 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('5', '11', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+256GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('6', '11', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+128GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', '华为 HUAWEI Mate 30 Pro 翡冷翠 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('7', '11', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+256GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+256GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '6299.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('8', '11', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+128GB', null, '225', '9', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', '华为 HUAWEI Mate 30 Pro 罗兰紫 8GB+128GB麒麟990旗舰芯片OLED环幕屏双4000万徕卡电影四摄4G全网通手机', '【现货抢购！享白条12期免息！】麒麟990，OLED环幕屏双4000万徕卡电影四摄；Mate30系列享12期免息》', '5799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('9', '13', ' Apple iPhone 11 (A2223)  黑色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 128GB 移动联通电信4G手机 双卡双待 最后几件优惠', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('10', '13', ' Apple iPhone 11 (A2223)  黑色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 256GB 移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('11', '13', ' Apple iPhone 11 (A2223)  黑色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', ' Apple iPhone 11 (A2223)  黑色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('12', '13', ' Apple iPhone 11 (A2223)  白色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('13', '13', ' Apple iPhone 11 (A2223)  白色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('14', '13', ' Apple iPhone 11 (A2223)  白色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', ' Apple iPhone 11 (A2223)  白色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('15', '13', ' Apple iPhone 11 (A2223)  绿色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('16', '13', ' Apple iPhone 11 (A2223)  绿色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('17', '13', ' Apple iPhone 11 (A2223)  绿色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  绿色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('18', '13', ' Apple iPhone 11 (A2223)  黄色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('19', '13', ' Apple iPhone 11 (A2223)  黄色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('20', '13', ' Apple iPhone 11 (A2223)  黄色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  黄色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('21', '13', ' Apple iPhone 11 (A2223)  红色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('22', '13', ' Apple iPhone 11 (A2223)  红色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('23', '13', ' Apple iPhone 11 (A2223)  红色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', ' Apple iPhone 11 (A2223)  红色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('24', '13', ' Apple iPhone 11 (A2223)  紫色 128GB ', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 128GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5999.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('25', '13', ' Apple iPhone 11 (A2223)  紫色 256GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 256GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '6799.0000', '0');
+INSERT INTO `pms_sku_info` VALUES ('26', '13', ' Apple iPhone 11 (A2223)  紫色 64GB', null, '225', '12', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', ' Apple iPhone 11 (A2223)  紫色 64GB  移动联通电信4G手机 双卡双待', 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5399元！详情请点击！', '5499.0000', '0');
 
 -- ----------------------------
 -- Table structure for pms_sku_sale_attr_value
@@ -1931,23 +1931,23 @@ CREATE TABLE `pms_spu_images` (
 -- ----------------------------
 -- Records of pms_spu_images
 -- ----------------------------
-INSERT INTO `pms_spu_images` VALUES ('71', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/ef2691e5-de1a-4ca3-827d-a60f39fbda93_0d40c24b264aa511.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('72', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/20f83b0c-86ba-4a64-808a-f2ace190ea2c_1f15cdbcf9e1273c.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('73', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/89e324b9-d0cf-4f4f-8e81-94bb219910b3_2b1837c6c50add30.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('74', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/9a6ba5c0-0a31-4364-8759-012bdfbf5ad3_3c24f9cd69534030.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('75', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/a73ef55a-79b4-41d9-8eb6-760c8b5a33dc_23d9fbb256ea5d4a.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('76', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/099f297e-ddea-4fb5-87c7-78cd88e500c0_28f296629cca865e.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('77', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/38492c9f-b0e0-4cba-87a9-77cb6189ea73_73ab4d2e818d2211.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('78', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/7aa1019e-4e01-49dd-8ac4-7d2794d0b1a8_335b2c690e43a8f8.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('79', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/d12516dd-43cf-4ace-8dc9-14618d2d75e4_919c850652e98031.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('80', '11', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/60e65a44-f943-4ed5-87c8-8cf90f403018_d511faab82abb34b.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('88', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/1756fa6d-1934-4d5c-8faf-84b3d882fe53_5b5e74d0978360a1.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('89', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/299481e9-4704-4824-8b18-60c7d268353c_7ae0120ec27dc3a7.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('90', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/462ef293-2b8b-4c53-85f2-1726e14dc976_23cd65077f12f7f5.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('91', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/bc4825d6-2a6c-43f8-8d75-5f35b77b9514_a2c208410ae84d1f.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('92', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/f968b6ac-2fca-4440-842f-8db8b76478f0_b8494bf281991f94.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('93', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/e21777b3-18ac-4580-819e-497c3aa25e4f_6a1b2703a9ed8737.jpg', null, null);
-INSERT INTO `pms_spu_images` VALUES ('94', '13', null, 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/2419c5cf-a641-4ec1-8f94-64981dc207f6_63e862164165f483.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('71', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/163ba10e-9b04-431f-816d-c36eab5a0764_0d40c24b264aa511.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('72', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ac21f738-fbc7-4de3-8562-769fd4e4a49e_1f15cdbcf9e1273c.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('73', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/1313808c-246b-4280-8fa7-656707c19fd5_2b1837c6c50add30.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('74', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a534e3a7-37f6-4f66-840a-9e88664fb585_3c24f9cd69534030.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('75', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/07fefdd3-7c01-4a16-859f-f03dfc06d078_23d9fbb256ea5d4a.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('76', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/642325f8-8969-4c66-897e-13e61ca6f0a3_28f296629cca865e.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('77', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/3cac440f-c2ec-49d2-8089-2da27c3a8a36_73ab4d2e818d2211.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('78', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/70388f61-441c-423f-84cd-1e4a773ee356_335b2c690e43a8f8.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('79', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/54153e07-6446-4287-81d3-91c9c11b92c5_919c850652e98031.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('80', '11', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e804b9fa-a39a-4e59-8565-d9acae877ed1_d511faab82abb34b.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('88', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a7751ae0-6e20-4ef4-830f-489db09b5bf5_5b5e74d0978360a1.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('89', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ceddc481-87b8-4b0e-809e-27d42e7f8e08_7ae0120ec27dc3a7.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('90', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/a3491837-aa07-4f77-8a9a-624449192627_23cd65077f12f7f5.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('91', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/ef3a7af5-e2c6-407e-8476-ec7887ce8188_a2c208410ae84d1f.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('92', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/81ef361e-a990-4e47-8ba0-37f7e9dfc892_b8494bf281991f94.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('93', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/c6e7e788-03be-47a6-87e7-5c763a46c4e2_6a1b2703a9ed8737.jpg', null, null);
+INSERT INTO `pms_spu_images` VALUES ('94', '13', null, 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/b4476ae6-0587-4d6c-8cc2-720ee8f1ab33_63e862164165f483.jpg', null, null);
 
 -- ----------------------------
 -- Table structure for pms_spu_info
@@ -1985,8 +1985,8 @@ CREATE TABLE `pms_spu_info_desc` (
 -- ----------------------------
 -- Records of pms_spu_info_desc
 -- ----------------------------
-INSERT INTO `pms_spu_info_desc` VALUES ('11', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/702b76e6-ce3e-4268-8216-a12db5607347_73366cc235d68202.jpg,https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-26/38956d81-5dff-4abd-8ce8-144908e869d8_528211b97272d88a.jpg');
-INSERT INTO `pms_spu_info_desc` VALUES ('13', 'https://gulimall-hello.oss-cn-beijing.aliyuncs.com/2019-11-27/ffc5a377-b037-4f26-84a0-df5b1c7cf42d_f205d9c99a2b4b01.jpg');
+INSERT INTO `pms_spu_info_desc` VALUES ('11', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/e3d98ff3-aff8-446a-825e-02b55d718c52_73366cc235d68202.jpg,https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/bf955125-2d8a-4049-8653-532b06fc9c69_528211b97272d88a.jpg');
+INSERT INTO `pms_spu_info_desc` VALUES ('13', 'https://mall-qian.oss-cn-nanjing.aliyuncs.com/2022-09-23/588f8ef4-f524-498d-8a23-225c0bbcb8d6_f205d9c99a2b4b01.jpg');
 
 -- ----------------------------
 -- Table structure for undo_log
