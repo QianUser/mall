@@ -56,10 +56,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     @Override
-    public Long[] findcatalogPath(Long catalogId) {
+    public Long[] findCatelogPath(Long catelogId) {
         List<Long> paths = new ArrayList<>();
         // 递归查询是否还有父节点
-        List<Long> parentPath = findParentPath(catalogId, paths);
+        List<Long> parentPath = findParentPath(catelogId, paths);
         // 进行一个逆序排列
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[0]);
@@ -83,11 +83,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     }
 
-    private List<Long> findParentPath(Long catalogId, List<Long> paths) {
+    private List<Long> findParentPath(Long catelogId, List<Long> paths) {
         // 收集当前节点id
-        paths.add(catalogId);
+        paths.add(catelogId);
         // 根据当前分类id查询信息
-        CategoryEntity byId = this.getById(catalogId);
+        CategoryEntity byId = this.getById(catelogId);
         // 如果当前不是父分类
         if (byId.getParentCid() != 0) {
             findParentPath(byId.getParentCid(), paths);

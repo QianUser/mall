@@ -69,7 +69,7 @@ public class SpuCommentEntity implements Serializable {
 	 */
 	private Integer replyCount;
 	/**
-	 * 评论图片/视频[json数据；[{type:文件类型,url:资源路径}]]
+	 * 评论图片/视频[json数据；[{type:文件类型, url:资源路径}]]
 	 */
 	private String resources;
 	/**

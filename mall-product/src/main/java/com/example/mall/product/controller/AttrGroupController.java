@@ -54,12 +54,12 @@ public class AttrGroupController {
     /**
      * 获取分类下所有分组与关联属性
      */
-    @GetMapping(value = "/{catalogId}/withattr")
-    public R getAttrGroupWithAttrs(@PathVariable("catalogId") Long catalogId) {
+    @GetMapping(value = "/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId) {
         // 查出当前分类下的所有属性分组与每个属性分组下的所有属性
-        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsBycatalogId(catalogId);
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
 
-        return R.ok().put("data",vos);
+        return R.ok().put("data", vos);
     }
 
     /**
@@ -70,7 +70,7 @@ public class AttrGroupController {
 
         List<AttrEntity> entities = attrService.getRelationAttr(attrgroupId);
 
-        return R.ok().put("data",entities);
+        return R.ok().put("data", entities);
     }
 
     /**
@@ -81,16 +81,16 @@ public class AttrGroupController {
                                 @PathVariable("attrgroupId") Long attrgroupId) {
         PageUtils page = attrService.getNoRelationAttr(params, attrgroupId);
 
-        return R.ok().put("page",page);
+        return R.ok().put("page", page);
     }
 
 
     /**
      * 列表
      */
-    @RequestMapping("/list/{catalogId}")
-    public R list(@RequestParam Map<String, Object> params,@PathVariable("catalogId") Long catalogId){
-        PageUtils page = attrGroupService.queryPage(params, catalogId);
+    @RequestMapping("/list/{catelogId}")
+    public R list(@RequestParam Map<String, Object> params, @PathVariable("catelogId") Long catelogId){
+        PageUtils page = attrGroupService.queryPage(params, catelogId);
 
         return R.ok().put("page", page);
     }
@@ -102,10 +102,10 @@ public class AttrGroupController {
     public R info(@PathVariable("attrGroupId") Long attrGroupId){
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
 
-        Long catalogId = attrGroup.getcatalogId();
-        Long[] path = categoryService.findcatalogPath(catalogId);
+        Long catelogId = attrGroup.getCatelogId();
+        Long[] path = categoryService.findCatelogPath(catelogId);
 
-        attrGroup.setcatalogPath(path);
+        attrGroup.setCatelogPath(path);
 
         return R.ok().put("attrGroup", attrGroup);
     }

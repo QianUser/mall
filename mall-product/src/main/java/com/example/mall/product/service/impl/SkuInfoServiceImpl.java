@@ -41,23 +41,23 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         String key = (String) params.get("key");
         if (!StringUtils.isEmpty(key) && !"0".equalsIgnoreCase(key)) {
             queryWrapper.and((wrapper) -> {
-                wrapper.eq("sku_id",key).or().like("sku_name",key);
+                wrapper.eq("sku_id", key).or().like("sku_name", key);
             });
         }
 
-        String catalogId = (String) params.get("catalogId");
-        if (!StringUtils.isEmpty(catalogId) && !"0".equalsIgnoreCase(catalogId)) {
-            queryWrapper.eq("catalog_id",catalogId);
+        String catelogId = (String) params.get("catelogId");
+        if (!StringUtils.isEmpty(catelogId) && !"0".equalsIgnoreCase(catelogId)) {
+            queryWrapper.eq("catalog_id", catelogId);
         }
 
         String brandId = (String) params.get("brandId");
         if (!StringUtils.isEmpty(brandId) && !"0".equalsIgnoreCase(brandId)) {
-            queryWrapper.eq("brand_id",brandId);
+            queryWrapper.eq("brand_id", brandId);
         }
 
         String min = (String) params.get("min");
         if (!StringUtils.isEmpty(min)) {
-            queryWrapper.ge("price",min);
+            queryWrapper.ge("price", min);
         }
 
         String max = (String) params.get("max");
@@ -66,7 +66,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             try {
                 BigDecimal bigDecimal = new BigDecimal(max);
                 if (bigDecimal.compareTo(BigDecimal.ZERO) > 0) {
-                    queryWrapper.le("price",max);
+                    queryWrapper.le("price", max);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -34,11 +34,11 @@ public class CategoryBrandRelationController {
     /**
      * 获取当前品牌关联的所有分类列表
      */
-    @GetMapping("/catalog/list")
-    public R catalogList(@RequestParam("brandId") Long brandId){
+    @GetMapping("/catelog/list")
+    public R catelogList(@RequestParam("brandId") Long brandId){
 
         List<CategoryBrandRelationEntity> data = categoryBrandRelationService.
-                list(new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id",brandId));
+                list(new QueryWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
 
         return R.ok().put("data", data);
     }
@@ -55,7 +55,7 @@ public class CategoryBrandRelationController {
             return brandVo;
         }).collect(Collectors.toList());
 
-        return R.ok().put("data",collect);
+        return R.ok().put("data", collect);
     }
 
     /**

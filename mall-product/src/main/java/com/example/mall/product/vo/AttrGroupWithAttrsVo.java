@@ -33,7 +33,7 @@ public class AttrGroupWithAttrsVo {
     /**
      * 所属分类id
      */
-    private Long catalogId;
+    private Long catelogId;
 
     private List<AttrEntity> attrs;
 }

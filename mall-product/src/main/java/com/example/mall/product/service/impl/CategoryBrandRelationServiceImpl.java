@@ -51,16 +51,16 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     @Override
     public void saveDetail(CategoryBrandRelationEntity categoryBrandRelation) {
         Long brandId = categoryBrandRelation.getBrandId();
-        Long catalogId = categoryBrandRelation.getcatalogId();
+        Long catelogId = categoryBrandRelation.getCatelogId();
 
         // 查询品牌详细信息
         BrandEntity brandEntity = brandDao.selectById(brandId);
         // 查询分类详细信息
-        CategoryEntity categoryEntity = categoryDao.selectById(catalogId);
+        CategoryEntity categoryEntity = categoryDao.selectById(catelogId);
 
         // 将信息保存到categoryBrandRelation中
         categoryBrandRelation.setBrandName(brandEntity.getName());
-        categoryBrandRelation.setcatalogName(categoryEntity.getName());
+        categoryBrandRelation.setCatelogName(categoryEntity.getName());
 
         // 保存到数据库中
         this.baseMapper.insert(categoryBrandRelation);
@@ -71,7 +71,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         CategoryBrandRelationEntity relationEntity = new CategoryBrandRelationEntity();
         relationEntity.setBrandId(brandId);
         relationEntity.setBrandName(name);
-        this.update(relationEntity,new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
+        this.update(relationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
     }
 
     @Override
@@ -82,9 +82,9 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     @Override
     public List<BrandEntity> getBrandsByCatId(Long catId) {
 
-        List<CategoryBrandRelationEntity> catalogId = relationDao.selectList(new QueryWrapper<CategoryBrandRelationEntity>().eq("catalog_id", catId));
+        List<CategoryBrandRelationEntity> catelogId = relationDao.selectList(new QueryWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
 
-        return catalogId.stream().map(item -> {
+        return catelogId.stream().map(item -> {
             Long brandId = item.getBrandId();
             // 查询品牌的详情
             return brandDao.selectById(brandId);

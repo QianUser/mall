@@ -42,18 +42,18 @@ public class AttrController {
 
         List<ProductAttrValueEntity> entities = productAttrValueService.baseAttrListForSpu(spuId);
 
-        return R.ok().put("data",entities);
+        return R.ok().put("data", entities);
     }
 
     /**
      * 查询规格参数信息
      */
-    @GetMapping("/{attrType}/list/{catalogId}")
+    @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,
-                          @PathVariable("catalogId") Long catalogId,
+                          @PathVariable("catelogId") Long catelogId,
                           @PathVariable("attrType") String type){
 
-        PageUtils page = attrService.queryBaseAttrPage(params,catalogId,type);
+        PageUtils page = attrService.queryBaseAttrPage(params, catelogId, type);
         return R.ok().put("page", page);
     }
 
@@ -102,7 +102,7 @@ public class AttrController {
     public R updateSpuAttr(@PathVariable("spuId") Long spuId,
                            @RequestBody List<ProductAttrValueEntity> entities){
 
-        productAttrValueService.updateSpuAttr(spuId,entities);
+        productAttrValueService.updateSpuAttr(spuId, entities);
 
         return R.ok();
     }

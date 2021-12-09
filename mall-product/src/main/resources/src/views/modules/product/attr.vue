@@ -71,7 +71,7 @@
         label="启用状态[0 - 禁用，1 - 启用]">
       </el-table-column>
       <el-table-column
-        prop="catalogId"
+        prop="catelogId"
         header-align="center"
         align="center"
         label="所属分类">
