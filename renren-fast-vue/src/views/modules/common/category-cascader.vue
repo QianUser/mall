@@ -16,7 +16,7 @@ import PubSub from 'pubsub-js'
 export default {
   components: {},
   props: {
-    catelogPath: {
+    catalogPath: {
       type: Array,
       default () {
         return []
@@ -31,15 +31,15 @@ export default {
         children: 'children'
       },
       categorys: [],
-      paths: this.catelogPath
+      paths: this.catalogPath
     }
   },
   watch: {
-    catelogPath (v) {
-      this.paths = this.catelogPath
+    catalogPath (v) {
+      this.paths = this.catalogPath
     },
     paths (v) {
-      this.$emit('update:catelogPath', v)
+      this.$emit('update:catalogPath', v)
       // 还可以使用pubsub-js进行传值
       PubSub.publish('catPath', v)
     }

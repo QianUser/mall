@@ -6,9 +6,9 @@ public class ProductConstant {
         ATTR_TYPE_BASE(1,"基本属性"),
         ATTR_TYPE_SALE(0,"销售属性");
 
-        private int code;
+        private final int code;
 
-        private String msg;
+        private final String msg;
 
         public int getCode() {
             return code;
@@ -31,9 +31,9 @@ public class ProductConstant {
         SPU_UP(1,"商品上架"),
         SPU_DOWN(2,"商品下架");
 
-        private int code;
+        private final int code;
 
-        private String msg;
+        private final String msg;
 
         public int getCode() {
             return code;

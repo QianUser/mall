@@ -76,7 +76,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-## Docker安装MySQL
+## Docker安装[MySQL](https://www.mysql.com/)
 
 下载[镜像文件](https://hub.docker.com/_/mysql/tags)：
 
@@ -150,7 +150,7 @@ ls  # 确实产生了一个my.cnf文件
 cat my.cnf  # 内容也确实与配置的一样
 ```
 
-## Docker安装Redis
+## Docker安装[Redis](https://redis.io/)
 
 下载[镜像文件](https://hub.docker.com/_/redis/tags)：
 
@@ -189,12 +189,128 @@ appendonly yes
 
 Redis的所有配置见[Redis configuration](https://redis.io/docs/manual/config/)。
 
+## Docker安装[ElasticSearch](https://www.elastic.co/)
+
+下载[ElasticSearch](https://hub.docker.com/_/elasticsearch/tags)与[Kibana](https://hub.docker.com/_/kibana/tags)镜像文件：
+
+```sh
+docker pull elasticsearch:7.5.2  # 存储与检索数据
+docker pull kibana:7.5.2  # 可视化检索数据
+```
+
+创建ElasticSearch实例：
+
+```sh
+mkdir -p /mydata/elasticsearch/config
+mkdir -p /mydata/elasticsearch/data
+echo "http.host: 0.0.0.0" >> /mydata/elasticsearch/config/elasticsearch.yml
+
+chmod -R 777 /mydata/elasticsearch/ # 保证权限
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 \  # 9200端口用于接收HTTP请求，9300端口为ElasticSearch在分布式集群状态下节点之间的通信端口
+-e "discovery.type=single-node" \
+-e ES_JAVA_OPTS="-Xms256m -Xmx1024m" \  # 测试环境下，设置ElasticSearch的初始内存与最大内存，否则内存占用过大
+-v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
+-v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
+-v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \  # 以后在容器外面装好插件重启即可
+-d --privileged=true elasticsearch:7.5.2
+```
+
+访问`9200`端口，可以看到容器已经启动。
+
+创建Kibana实例：
+
+```sh
+docker run --name kibana -e ELASTICSEARCH_HOSTS=http://192.168.227.131:9200 -p 5601:5601 \
+-d kibana:7.5.2
+```
+
+访问`5601`端口，进入可视化界面。
+
+### 安装IK分词器
+
+安装IK分词器：
+
+```sh
+cd /mydata/elasticsearch/plugins
+wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.5.2/elasticsearch-analysis-ik-7.5.2.zip
+unzip elasticsearch-analysis-ik-7.5.2.zip -d ik
+rm -rf *.zip
+
+# 确认是否安装好了分词器
+docker exec -it 55b /bin/bash  # 进入elasticsearch容器内部
+cd bin
+elasticsearch-plugin list  # 列出系统的分词器
+
+exit
+docker restart elasticsearch
+```
+
+IK分词器包含两种常用分词器：`ik_smart`与`ik_max_word`。
+
+### 自定义词库
+
+IK分词器的词库不够强大，需要指定远程词库。这里用Nginx保存远程词库：
+
+```sh
+cd /mydata
+mkdir nginx
+docker run -p 80:80 --name nginx -d nginx:1.22.0  # 随便启动一个Nginx实例，只是为了复制出配置
+docker container cp nginx:/etc/nginx .  # 将容器内的配置文件拷贝到当前目录
+
+docker stop nginx
+docker rm nginx
+
+mv nginx conf
+mkdir nginx
+mv conf/ nginx/
+
+docker run -p 80:80 --name nginx \  # 创建新的Nginx
+-v /mydata/nginx/html:/usr/share/nginx/html \
+-v /mydata/nginx/logs:/var/log/nginx \
+-v /mydata/nginx/conf:/etc/nginx \
+-d nginx:1.22.0
+```
+
+```sh
+cd html
+mkdir es
+cd es
+vi fenci.txt  # 保存单词
+```
+
+修改`/mydata/elasticsearch/plugins/ik/config/IKAnalyzer.cfg.xml`文件：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+        <comment>IK Analyzer 扩展配置</comment>
+        <!--用户可以在这里配置自己的扩展字典 -->
+        <entry key="ext_dict"></entry>
+         <!--用户可以在这里配置自己的扩展停止词字典-->
+        <entry key="ext_stopwords"></entry>
+        <!--用户可以在这里配置远程扩展字典 -->
+        <entry key="remote_ext_dict">http://192.168.227.131/es/fenci.txt</entry>
+        <!--用户可以在这里配置远程扩展停止词字典-->
+        <!-- <entry key="remote_ext_stopwords">words_location</entry> -->
+</properties>
+```
+
+重启ElasticSearch：
+
+```sh
+docker restart elasticsearch
+```
+
 设置Docker启动后容器自动启动：
 
 ```sh
 sudo docker ps -a  # 查看所有容器
-sudo docker update mysql -- restart=always
-sudo docker update redis -- restart=always
+sudo docker update mysql --restart=always
+sudo docker update redis --restart=always
+sudo docker update elasticsearch --restart=always
+sudo docker update kibana --restart=always
+sudo docker update nginx --restart=always
 ```
 
 ## 安装插件
@@ -711,7 +827,149 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 
 [^备注]: 如果在`商品维护`的`spu管理`界面对每个SPU执行`规格`操作报错：找不到页面，则在mall_admin数据库下执行：`INSERT INTO sys_menu (menu_id, parent_id, name, url, perms, type, icon, order_num) VALUES (76, 37, '规格维护', 'product/attrupdate', '', 1, 'log', 0);`。
 
+# 商城业务
 
+创建SpringBoot模块（Group：`com.example.mall`，Artifact：`mall-search`，Description：ElasticSearch检索服务，Package：`com.example.mall.search`），导入Spring Web依赖。
+
+项目使用[Java REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.5/index.html)客户端与ElasticSearch通信，且使用其[Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.5/java-rest-high.html)。
+
+从[加载示例数据](https://www.elastic.co/guide/cn/kibana/current/tutorial-load-dataset.html)处导入[accounts.zip](https://download.elastic.co/demos/kibana/gettingstarted/accounts.zip)并测试：
+
+```sh
+POST /bank/_bulk
+# 复制批量数据到这里
+```
+
+## 商品上架
+
+上架的商品才可以在网站展示。
+
+上架的商品需要可以被检索（即保存到ElasticSearch）。
+
+为了节省内存，ElasticSearch中只保存商品有用的信息，不保存图片等信息。这些信息的保存格式类似：
+
+```json
+{
+    "skuId": 1,
+    "spuId": 11,
+    "skuTitle": "苹果",
+    "price": 4998,
+    "saleCount": 99,
+    "attrs": {
+        "尺寸": "5寸",
+        "CPU": "A14",
+        "分辨率": "全高清"
+    }
+}
+```
+
+这种格式会浪费一点内存，但方便检索。
+
+或者：
+
+```json
+{
+    "skuId": 1,
+    "spuId": 11,
+    "skuTitle": "苹果",
+    "price": 4998,
+    "saleCount": 99,
+}
+
+{  // 将attrs字段单独保存，通过spuId检索
+    "spuId": 11,
+    "attrs": {
+        "尺寸": "5寸",
+        "CPU": "A14",
+        "分辨率": "全高清"
+    }
+}
+```
+
+这种格式保存的信息不冗余，同时方便检索。但是效率不如第一种，考虑如下情况：用户检索`小米`，检索出10000个商品，涉及4000个SPU；查出4000个SPU对应的所有属性，这样一个请求就会发送$32KB(8B \times 4000)$数据，并发情况下性能会很差。
+
+这里采用方案1，发送给ElasticSearch检索（`PUT product`）的数据如下：
+
+```json
+{
+  "mappings": {
+    "properties": {
+      "skuId": {
+        "type": "long"
+      },
+      "spuId": {
+        "type": "keyword"
+      },
+      "skuTitle": {
+        "type": "text",
+        "analyzer": "ik_smart"
+      },
+      "skuPrice": {
+        "type": "keyword"
+      },
+      "skuImg": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "saleCount": {
+        "type": "long"
+      },
+      "hasStock": {
+        "type": "boolean"  // 有无库存，这里不记录库存数，因为维护库存数代价大（需要频繁更新）
+      },
+      "hotScore": {
+        "type": "long"
+      },
+      "brandId": {
+        "type": "long"
+      },
+      "catalogId": {
+        "type": "long"
+      },
+      "brandName": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "brandImg": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "catalogName": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "attrs": {
+        "type": "nested",
+        "properties": {
+          "attrId": {
+            "type": "long"
+          },
+          "attrName": {
+            "type": "keyword",
+            "index": false,
+            "doc_values": false
+          },
+          "attrValue": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+说明：
+
+- `index`：默认为`true`。如果为`false`，表示该字段不会被索引，但是检索结果里面有，但字段本身不能当做检索条件
+- `doc_values`：默认`true`，设置为`false`，表示不可以做排序、聚合以及脚本操作，这样更节省磁盘空间；可以通过设定`doc_values`为`true`，`index`为`false`来让字段不能被搜索但可以用于排序、聚合以及脚本操作。
+- `"type": "nested"`：[防止数组扁平化](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/nested.html)。
+
+在`商品系统`$\rightarrow$`商品维护`$\rightarrow$`spu管理`中，每个商品可以上架。
 
 # 参考
 

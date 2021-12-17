@@ -5,12 +5,6 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @Description:
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-05-27 17:54
- **/
 public class ListValueConstraintValidator implements ConstraintValidator<ListValue,Integer> {
 
     private Set<Integer> set = new HashSet<>();

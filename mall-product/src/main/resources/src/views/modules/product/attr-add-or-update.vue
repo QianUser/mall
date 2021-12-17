@@ -25,8 +25,8 @@
     <el-form-item label="启用状态[0 - 禁用，1 - 启用]" prop="enable">
       <el-input v-model="dataForm.enable" placeholder="启用状态[0 - 禁用，1 - 启用]"></el-input>
     </el-form-item>
-    <el-form-item label="所属分类" prop="catelogId">
-      <el-input v-model="dataForm.catelogId" placeholder="所属分类"></el-input>
+    <el-form-item label="所属分类" prop="catalogId">
+      <el-input v-model="dataForm.catalogId" placeholder="所属分类"></el-input>
     </el-form-item>
     <el-form-item label="快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整" prop="showDesc">
       <el-input v-model="dataForm.showDesc" placeholder="快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整"></el-input>
@@ -53,7 +53,7 @@
           valueSelect: '',
           attrType: '',
           enable: '',
-          catelogId: '',
+          catalogId: '',
           showDesc: ''
         },
         dataRule: {
@@ -78,7 +78,7 @@
           enable: [
             { required: true, message: '启用状态[0 - 禁用，1 - 启用]不能为空', trigger: 'blur' }
           ],
-          catelogId: [
+          catalogId: [
             { required: true, message: '所属分类不能为空', trigger: 'blur' }
           ],
           showDesc: [
@@ -107,7 +107,7 @@
                 this.dataForm.valueSelect = data.attr.valueSelect
                 this.dataForm.attrType = data.attr.attrType
                 this.dataForm.enable = data.attr.enable
-                this.dataForm.catelogId = data.attr.catelogId
+                this.dataForm.catalogId = data.attr.catalogId
                 this.dataForm.showDesc = data.attr.showDesc
               }
             })
@@ -130,7 +130,7 @@
                 'valueSelect': this.dataForm.valueSelect,
                 'attrType': this.dataForm.attrType,
                 'enable': this.dataForm.enable,
-                'catelogId': this.dataForm.catelogId,
+                'catalogId': this.dataForm.catalogId,
                 'showDesc': this.dataForm.showDesc
               })
             }).then(({data}) => {

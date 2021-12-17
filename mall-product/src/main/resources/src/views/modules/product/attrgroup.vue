@@ -53,7 +53,7 @@
         label="组图标">
       </el-table-column>
       <el-table-column
-        prop="catelogId"
+        prop="catalogId"
         header-align="center"
         align="center"
         label="所属分类id">
