@@ -971,6 +971,24 @@ POST /bank/_bulk
 
 在`商品系统`$\rightarrow$`商品维护`$\rightarrow$`spu管理`中，每个商品可以上架。
 
+[^0]: 将商品服务端口改为10001。
+
+## 首页
+
+### 整合Thymeleaf渲染首页
+
+将控制器拆分为两个部分：
+
+- 和Web页面有关的放在`web`包下。
+- REST接口放在`app`包下。
+
+整合Thymeleaf渲染首页时：
+
+- 关闭Thymeleaf缓存，开发期间能看到实时效果。
+
+- 静态资源都放在`src/main/resources/static`文件夹下，按照路径直接访问。
+- 页面放在`src/main/resources/templates`文件夹下。直接访问`http://localhost:10001/`，即可看到首页。SpringBoot访问项目默认会找`index.html`（见`org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration`配合类）。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
