@@ -982,12 +982,17 @@ POST /bank/_bulk
 - 和Web页面有关的放在`web`包下。
 - REST接口放在`app`包下。
 
-整合Thymeleaf渲染首页时：
+整合[Thymeleaf](https://www.thymeleaf.org/)渲染首页时：
 
 - 关闭Thymeleaf缓存，开发期间能看到实时效果。
-
 - 静态资源都放在`src/main/resources/static`文件夹下，按照路径直接访问。
 - 页面放在`src/main/resources/templates`文件夹下。直接访问`http://localhost:10001/`，即可看到首页。SpringBoot访问项目默认会找`index.html`（见`org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration`配合类）。
+
+### 渲染一级分类数据
+
+Thymeleaf使用参考[Tutorial: Using Thymeleaf](https://www.thymeleaf.org/documentation.html)，或者直接下载[PDF](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.pdf)。
+
+使用Thymeleaf后，如果页面修改，则必须要重启服务才能看到效果。要想不重启，则引入Devtools工具，然后重新编译项目（快捷键：`Ctrl+F9`）或当前资源（快捷键：`Ctrl+Shift+F9`），前提是要关闭Thymeleaf缓存。如果类或配置被改，则推荐重启服务。
 
 # 参考
 

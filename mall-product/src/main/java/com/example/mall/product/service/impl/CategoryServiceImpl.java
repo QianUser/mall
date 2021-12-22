@@ -2,6 +2,7 @@ package com.example.mall.product.service.impl;
 
 import com.example.mall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -93,6 +94,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             findParentPath(byId.getParentCid(), paths);
         }
         return paths;
+    }
+    @Override
+    public List<CategoryEntity> getLevel1Categories() {
+        return this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
     }
 
 
