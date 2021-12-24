@@ -988,7 +988,7 @@ POST /bank/_bulk
 - 静态资源都放在`src/main/resources/static`文件夹下，按照路径直接访问。
 - 页面放在`src/main/resources/templates`文件夹下。直接访问`http://localhost:10001/`，即可看到首页。SpringBoot访问项目默认会找`index.html`（见`org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration`配合类）。
 
-### 渲染一级分类数据
+### 渲染分类数据
 
 Thymeleaf使用参考[Tutorial: Using Thymeleaf](https://www.thymeleaf.org/documentation.html)，或者直接下载[PDF](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.pdf)。
 

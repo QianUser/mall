@@ -2,12 +2,15 @@ package com.example.mall.product.web;
 
 import com.example.mall.product.entity.CategoryEntity;
 import com.example.mall.product.service.CategoryService;
+import com.example.mall.product.vo.catalog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class IndexController {
@@ -21,6 +24,12 @@ public class IndexController {
         List<CategoryEntity> categoryEntities = categoryService.getLevel1Categories();
         model.addAttribute("categories",categoryEntities);
         return "index";
+    }
+
+    @GetMapping(value = "/index/catalog.json")
+    @ResponseBody
+    public Map<String, List<catalog2Vo>> getCatalogJson() {
+        return categoryService.getCatalogJson();
     }
 
 }
