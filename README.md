@@ -994,6 +994,51 @@ Thymeleaf使用参考[Tutorial: Using Thymeleaf](https://www.thymeleaf.org/docum
 
 使用Thymeleaf后，如果页面修改，则必须要重启服务才能看到效果。要想不重启，则引入Devtools工具，然后重新编译项目（快捷键：`Ctrl+F9`）或当前资源（快捷键：`Ctrl+Shift+F9`），前提是要关闭Thymeleaf缓存。如果类或配置被改，则推荐重启服务。
 
+## 反向代理配置
+
+为主机（IP：`192.168.227.131`）设置域名：`mall.com`（可以通过修改hosts文件实现）。
+
+将所有来自`mall.com`的所有请求都通过Nginx反向代理到网关：
+
+```sh
+cd /mydata/nginx/conf/conf.d
+cp default.conf mall.conf
+vi mall.conf
+```
+
+修改如下配置项：
+
+```nginx
+server_name mall.com;
+
+location / {
+    proxy_set_header Host $host;  # Nginx代理给网关会丢失请求的host信息，这里需要主动添上
+    proxy_pass http://mall;
+}
+```
+
+```sh
+vi ../nginx.conf
+```
+
+在`http`中添加如下配置项：
+
+```nginx
+upstream mall {
+    server 192.168.227.1:88;  # 本机（Windows 10）IP地址
+}
+```
+
+重启Nginx：
+
+```sh
+docker restart nginx
+```
+
+配置网关路由规则（注意配置在最后）。
+
+访问`mall.com`，可以看到首页。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
