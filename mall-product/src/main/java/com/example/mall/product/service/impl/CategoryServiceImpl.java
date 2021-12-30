@@ -113,7 +113,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 封装数据
 
         return level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
-            // 每一个的一级分类,查到这个一级分类的二级分类
+            // 每一个的一级分类，查到这个一级分类的二级分类
             List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
 
             // 封装上面的结果

@@ -24,8 +24,8 @@
       <el-form-item label="组图标" prop="icon">
         <el-input v-model="dataForm.icon" placeholder="组图标"></el-input>
       </el-form-item>
-      <el-form-item label="所属分类" prop="catalogId">
-        <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
+      <el-form-item label="所属分类" prop="catelogId">
+        <category-cascader :catelogPath.sync="catelogPath"></category-cascader>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -47,14 +47,14 @@ export default {
       },
       visible: false,
       categorys: [],
-      catalogPath: [],
+      catelogPath: [],
       dataForm: {
         attrGroupId: 0,
         attrGroupName: '',
         sort: '',
         descript: '',
         icon: '',
-        catalogId: 0
+        catelogId: 0
       },
       dataRule: {
         attrGroupName: [
@@ -65,7 +65,7 @@ export default {
           { required: true, message: '描述不能为空', trigger: 'blur' }
         ],
         icon: [{ required: true, message: '组图标不能为空', trigger: 'blur' }],
-        catalogId: [
+        catelogId: [
           { required: true, message: '所属分类id不能为空', trigger: 'blur' }
         ]
       }
@@ -75,7 +75,7 @@ export default {
 
   methods: {
     dialogClose () {
-      this.catalogPath = []
+      this.catelogPath = []
     },
     getCategorys () {
       this.$http({
@@ -103,9 +103,9 @@ export default {
               this.dataForm.sort = data.attrGroup.sort
               this.dataForm.descript = data.attrGroup.descript
               this.dataForm.icon = data.attrGroup.icon
-              this.dataForm.catalogId = data.attrGroup.catalogId
-              // 查出catalogId的完整路径
-              this.catalogPath = data.attrGroup.catalogPath
+              this.dataForm.catelogId = data.attrGroup.catelogId
+              // 查出catelogId的完整路径
+              this.catelogPath = data.attrGroup.catelogPath
             }
           })
         }
@@ -128,7 +128,7 @@ export default {
               sort: this.dataForm.sort,
               descript: this.dataForm.descript,
               icon: this.dataForm.icon,
-              catalogId: this.catalogPath[this.catalogPath.length - 1]
+              catelogId: this.catelogPath[this.catelogPath.length - 1]
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

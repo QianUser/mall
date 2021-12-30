@@ -41,7 +41,7 @@ create table pms_attr
   `value_select` char(255) DEFAULT NULL COMMENT '可选值列表[用逗号分隔]',
   `attr_type` tinyint(4) DEFAULT NULL COMMENT '属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]',
    enable               bigint comment '启用状态[0 - 禁用，1 - 启用]',
-   catalog_id           bigint comment '所属分类',
+   catelog_id           bigint comment '所属分类',
    show_desc            tinyint comment '快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整',
    primary key (attr_id)
 );
@@ -72,7 +72,7 @@ create table pms_attr_group
    sort                 int comment '排序',
    descript             varchar(255) comment '描述',
    icon                 varchar(255) comment '组图标',
-   catalog_id           bigint comment '所属分类id',
+   catelog_id           bigint comment '所属分类id',
    primary key (attr_group_id)
 );
 
@@ -121,9 +121,9 @@ create table pms_category_brand_relation
 (
    id                   bigint not null auto_increment,
    brand_id             bigint comment '品牌id',
-   catalog_id           bigint comment '分类id',
+   catelog_id           bigint comment '分类id',
    brand_name           varchar(255),
-   catalog_name         varchar(255),
+   catelog_name         varchar(255),
    primary key (id)
 );
 

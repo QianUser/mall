@@ -1039,6 +1039,53 @@ docker restart nginx
 
 访问`mall.com`，可以看到首页。
 
+# 性能压测
+
+性能压测工具：
+
+- [Apache JMeter](https://jmeter.apache.org/)
+- JDK工具：JConsole与JVisualVM
+
+优化方面：
+
+- 中间件越多，性能损失越大，大多都损失在网络交互了。
+
+- MySQL优化：例如给mall_pms数据库的`pms_category`表的`parent_cid`字段加普通索引；`com.example.mall.product.service.impl.CategoryServiceImpl#getCatalogJson`方法一次查询出所有需要的数据然后过滤，而不是多次查询数据库。
+
+- 模板的渲染速度（缓存）：服务上线后，开启Thymeleaf缓存。
+
+- 动静分离。将项目的静态资源放在Ngnx中：
+
+  ```sh
+  cd /mydata/nginx/html
+  mkdir static
+  ```
+
+  将项目的`mall-product/src/main/resources/static/index`文件夹移动到虚拟机以上的`static`目录中。然后修改`mall-product/src/main/resources/templates/index.html`中的超链接路径。
+
+  ```sh
+  cd /mydata/nginx/conf/conf.d
+  vi mall.conf
+  ```
+
+  在`server`块中，添加：
+
+  ```nginx
+  location /static/ {
+      root /usr/share/nginx/html;
+  }
+  ```
+
+  ```sh
+  docker restart nginx
+  ```
+
+  然后访问`mall.com`可以看到首页，但是访问`localhost:10001`则无法访问静态资源。
+
+- 调高日志级别，不要设置为`DEBUG`级别。
+
+- 优化JVM：设置合理的`-Xmx`、`-Xms`与`-Xmn`虚拟机选项。如果这些值设置过小，可能导致压力测试时内存崩溃。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)

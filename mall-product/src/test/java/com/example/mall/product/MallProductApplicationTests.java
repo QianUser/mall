@@ -48,9 +48,9 @@ class MallProductApplicationTests {
 
     @Test
     public void testFindPath() {
-        Long[] catalogPath = categoryService.findcatalogPath(225l);
+        Long[] catelogPath = categoryService.findCatelogPath(225l);
 
-        log.info("完整路径catalogPath={}", Arrays.asList(catalogPath));
+        log.info("完整路径catelogPath={}", Arrays.asList(catelogPath));
     }
 
 }
