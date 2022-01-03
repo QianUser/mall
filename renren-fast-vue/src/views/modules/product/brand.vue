@@ -55,7 +55,7 @@
       <el-table-column prop="sort" header-align="center" align="center" label="排序"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="250" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="updatecatalogHandle(scope.row.brandId)">关联分类</el-button>
+          <el-button type="text" size="small" @click="updateCatalogHandle(scope.row.brandId)">关联分类</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.brandId)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.brandId)">删除</el-button>
         </template>
@@ -74,11 +74,11 @@
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
 
     <el-dialog title="关联分类" :visible.sync="cateRelationDialogVisible" width="30%">
-      <el-popover placement="right-end" v-model="popcatalogSelectVisible">
+      <el-popover placement="right-end" v-model="popCatalogSelectVisible">
         <category-cascader :catalogPath.sync="catalogPath"></category-cascader>
         <div style="text-align: right; margin: 0">
-          <el-button size="mini" type="text" @click="popcatalogSelectVisible = false">取消</el-button>
-          <el-button type="primary" size="mini" @click="addcatalogSelect">确定</el-button>
+          <el-button size="mini" type="text" @click="popCatalogSelectVisible = false">取消</el-button>
+          <el-button type="primary" size="mini" @click="addCatalogSelect">确定</el-button>
         </div>
         <el-button slot="reference">新增关联</el-button>
       </el-popover>
@@ -124,7 +124,7 @@ export default {
       dataListSelections: [],
       addOrUpdateVisible: false,
       cateRelationDialogVisible: false,
-      popcatalogSelectVisible: false
+      popCatalogSelectVisible: false
     }
   },
   components: {
@@ -135,9 +135,9 @@ export default {
     this.getDataList()
   },
   methods: {
-    addcatalogSelect () {
+    addCatalogSelect () {
       // {"brandId":1,"catalogId":2}
-      this.popcatalogSelectVisible = false
+      this.popCatalogSelectVisible = false
       this.$http({
         url: this.$http.adornUrl('/product/categorybrandrelation/save'),
         method: 'post',
@@ -155,7 +155,7 @@ export default {
         this.getCateRelation()
       })
     },
-    updatecatalogHandle (brandId) {
+    updateCatalogHandle (brandId) {
       this.cateRelationDialogVisible = true
       this.brandId = brandId
       this.getCateRelation()

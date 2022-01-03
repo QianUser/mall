@@ -57,7 +57,7 @@ public class AttrGroupController {
     @GetMapping(value = "/{catalogId}/withattr")
     public R getAttrGroupWithAttrs(@PathVariable("catalogId") Long catalogId) {
         // 查出当前分类下的所有属性分组与每个属性分组下的所有属性
-        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsBycatalogId(catalogId);
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsByCatalogId(catalogId);
 
         return R.ok().put("data", vos);
     }
@@ -102,10 +102,10 @@ public class AttrGroupController {
     public R info(@PathVariable("attrGroupId") Long attrGroupId){
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
 
-        Long catalogId = attrGroup.getcatalogId();
-        Long[] path = categoryService.findcatalogPath(catalogId);
+        Long catalogId = attrGroup.getCatalogId();
+        Long[] path = categoryService.findCatalogPath(catalogId);
 
-        attrGroup.setcatalogPath(path);
+        attrGroup.setCatalogPath(path);
 
         return R.ok().put("attrGroup", attrGroup);
     }

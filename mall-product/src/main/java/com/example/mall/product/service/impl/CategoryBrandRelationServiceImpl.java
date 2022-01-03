@@ -51,7 +51,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     @Override
     public void saveDetail(CategoryBrandRelationEntity categoryBrandRelation) {
         Long brandId = categoryBrandRelation.getBrandId();
-        Long catalogId = categoryBrandRelation.getcatalogId();
+        Long catalogId = categoryBrandRelation.getCatalogId();
 
         // 查询品牌详细信息
         BrandEntity brandEntity = brandDao.selectById(brandId);
@@ -60,7 +60,7 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
 
         // 将信息保存到categoryBrandRelation中
         categoryBrandRelation.setBrandName(brandEntity.getName());
-        categoryBrandRelation.setcatalogName(categoryEntity.getName());
+        categoryBrandRelation.setCatalogName(categoryEntity.getName());
 
         // 保存到数据库中
         this.baseMapper.insert(categoryBrandRelation);

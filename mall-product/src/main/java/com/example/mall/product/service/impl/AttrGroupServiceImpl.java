@@ -72,7 +72,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
      * 根据分类id查询出所有的分组以及这些组里面的属性
      */
     @Override
-    public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsBycatalogId(Long catalogId) {
+    public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatalogId(Long catalogId) {
 
         // 查询分组信息
         List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catalog_id", catalogId));

@@ -119,9 +119,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
             }
 
-            CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getcatalogId());
+            CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatalogId());
             if (categoryEntity != null) {
-                attrRespVo.setcatalogName(categoryEntity.getName());
+                attrRespVo.setCatalogName(categoryEntity.getName());
 
             }
             return attrRespVo;
@@ -158,13 +158,13 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }
 
         // 设置分类信息
-        Long catalogId = attrEntity.getcatalogId();
-        Long[] catalogPath = categoryService.findcatalogPath(catalogId);
+        Long catalogId = attrEntity.getCatalogId();
+        Long[] catalogPath = categoryService.findCatalogPath(catalogId);
 
-        respVo.setcatalogPath(catalogPath);
+        respVo.setCatalogPath(catalogPath);
         CategoryEntity categoryEntity = categoryDao.selectById(catalogId);
         if (categoryEntity != null) {
-            respVo.setcatalogName(categoryEntity.getName());
+            respVo.setCatalogName(categoryEntity.getName());
         }
 
         return respVo;
@@ -233,7 +233,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 当前分组只能关联自己所属的分类里面的所有属性
         AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupId);
         // 获取当前分类的id
-        Long catalogId = attrGroupEntity.getcatalogId();
+        Long catalogId = attrGroupEntity.getCatalogId();
 
         // 当前分组只能关联别的分组没有引用的属性
         // 当前分类下的其它分组

@@ -2,7 +2,7 @@ package com.example.mall.product.web;
 
 import com.example.mall.product.entity.CategoryEntity;
 import com.example.mall.product.service.CategoryService;
-import com.example.mall.product.vo.catalog2Vo;
+import com.example.mall.product.vo.Catalog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,7 @@ public class IndexController {
 
     @GetMapping(value = "/index/catalog.json")
     @ResponseBody
-    public Map<String, List<catalog2Vo>> getCatalogJson() {
+    public Map<String, List<Catalog2Vo>> getCatalogJson() {
         return categoryService.getCatalogJson();
     }
 
