@@ -8,10 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @SpringBootTest
@@ -22,6 +25,9 @@ class MallProductApplicationTests {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Test
     public void testInsert() {
@@ -48,9 +54,17 @@ class MallProductApplicationTests {
 
     @Test
     public void testFindPath() {
-        Long[] catelogPath = categoryService.findCatelogPath(225l);
+        Long[] catalogPath = categoryService.findcatalogPath(225L);
 
-        log.info("完整路径catelogPath={}", Arrays.asList(catelogPath));
+        log.info("完整路径catalogPath={}", Arrays.asList(catalogPath));
+    }
+
+    @Test
+    public void testStringRedis() {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set("hello", "world_" + UUID.randomUUID().toString());
+        String hello = ops.get("hello");
+        System.out.println("之前保存的数据：" + hello);
     }
 
 }
