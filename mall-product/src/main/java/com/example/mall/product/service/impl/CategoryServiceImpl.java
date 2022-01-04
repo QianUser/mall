@@ -1,9 +1,11 @@
 package com.example.mall.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.example.mall.product.service.CategoryBrandRelationService;
 import com.example.mall.product.vo.Catalog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,8 +21,7 @@ import com.example.mall.product.dao.CategoryDao;
 import com.example.mall.product.entity.CategoryEntity;
 import com.example.mall.product.service.CategoryService;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
+import org.springframework.util.StringUtils;
 
 
 @Service("categoryService")
@@ -28,6 +29,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -103,6 +107,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
+        String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
+        if (!StringUtils.hasLength(catalogJSON)) {
+            Map<String, List<Catalog2Vo>> catalogJSONFromDB = getCatalogJsonFromDB();
+            String s = JSON.toJSONString(catalogJSONFromDB);
+            redisTemplate.opsForValue().set("catalogJSON", s);
+            return catalogJSONFromDB;
+        }
+        return JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
+    }
+
+    private Map<String, List<Catalog2Vo>> getCatalogJsonFromDB() {
         // 将数据库的多次查询变为一次
         List<CategoryEntity> selectList = this.baseMapper.selectList(null);
 
