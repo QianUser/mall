@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,7 +32,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     private CategoryBrandRelationService categoryBrandRelationService;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -49,7 +50,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 组装成父子的树形结构
         return entities.stream()
                 .filter(e -> e.getParentCid() == 0)
-                .peek((menu) -> menu.setChildren(getChildrens(menu, entities)))
+                .peek((menu) -> menu.setChildren(getChildren(menu, entities)))
                 .sorted(Comparator.comparingInt(menu -> (menu.getSort() == null ? 0 : menu.getSort())))
                 .collect(Collectors.toList());
     }
@@ -82,9 +83,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     // 递归查找所有菜单的子菜单
-    private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
+    private List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {
         return all.stream().filter(categoryEntity -> categoryEntity.getParentCid().equals(root.getCatId())).peek(categoryEntity -> {
-            categoryEntity.setChildren(getChildrens(categoryEntity, all));
+            categoryEntity.setChildren(getChildren(categoryEntity, all));
         }).sorted(Comparator.comparingInt(menu -> (menu.getSort() == null ? 0 : menu.getSort()))).collect(Collectors.toList());
 
     }
@@ -107,17 +108,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
-        String catalogJSON = redisTemplate.opsForValue().get("catalogJSON");
+        String catalogJSON = stringRedisTemplate.opsForValue().get("catalogJson");
         if (!StringUtils.hasLength(catalogJSON)) {
-            Map<String, List<Catalog2Vo>> catalogJSONFromDB = getCatalogJsonFromDB();
-            String s = JSON.toJSONString(catalogJSONFromDB);
-            redisTemplate.opsForValue().set("catalogJSON", s);
-            return catalogJSONFromDB;
+            return getCatalogJsonFromDB();
         }
         return JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
     }
 
-    private Map<String, List<Catalog2Vo>> getCatalogJsonFromDB() {
+    private synchronized Map<String, List<Catalog2Vo>> getCatalogJsonFromDB() {
+        String catalogJSON = stringRedisTemplate.opsForValue().get("catalogJSON");
+        if (StringUtils.hasLength(catalogJSON)) {
+            return JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
+        }
         // 将数据库的多次查询变为一次
         List<CategoryEntity> selectList = this.baseMapper.selectList(null);
 
@@ -127,7 +129,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         // 封装数据
 
-        return level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+        Map<String, List<Catalog2Vo>> parentCid = level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
             // 每一个的一级分类，查到这个一级分类的二级分类
             List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
 
@@ -153,6 +155,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             return catalog2Vos;
         }));
+        // 写入缓存后才能释放锁，否则在单实例的情况下也会有多个线程的写操作
+        String valueJson = JSON.toJSONString(parentCid);
+        stringRedisTemplate.opsForValue().set("catalogJson", valueJson, 1, TimeUnit.DAYS);
+        return parentCid;
     }
 
     private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parentCid) {
