@@ -4,6 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.example.mall.product.service.CategoryBrandRelationService;
 import com.example.mall.product.vo.Catalog2Vo;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RReadWriteLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -34,6 +38,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private Redisson redisson;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -109,21 +116,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
-        String uuid = UUID.randomUUID().toString();
-        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", uuid,300,TimeUnit.SECONDS);
-        if (Boolean.TRUE.equals(lock)) {
-            Map<String, List<Catalog2Vo>> dataFromDb;
-            try {
-                dataFromDb = getCatalogJsonFromDB();
-            } finally {
-                String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-                stringRedisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Collections.singletonList("lock"), uuid);
-            }
-            return dataFromDb;
-        } else {
-            try { TimeUnit.MILLISECONDS.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-            return getCatalogJson();
+        RLock lock = redisson.getLock("catalogJson-lock");
+        lock.lock();
+        Map<String, List<Catalog2Vo>> dataFromDb;
+        try {
+            dataFromDb = getCatalogJsonFromDB();
+        } finally {
+            lock.unlock();
         }
+        return dataFromDb;
     }
 
     private synchronized Map<String, List<Catalog2Vo>> getCatalogJsonFromDB() {

@@ -6,6 +6,7 @@ import com.example.mall.product.service.BrandService;
 import com.example.mall.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,6 +29,9 @@ class MallProductApplicationTests {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Test
     public void testInsert() {
@@ -65,6 +69,11 @@ class MallProductApplicationTests {
         ops.set("hello", "world_" + UUID.randomUUID().toString());
         String hello = ops.get("hello");
         System.out.println("之前保存的数据：" + hello);
+    }
+
+    @Test
+    public void testRedisson() {
+        System.out.println(redissonClient);
     }
 
 }
