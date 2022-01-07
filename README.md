@@ -714,7 +714,7 @@ OSS前后联调测试上传时，注意在阿里云中，开启OSS的跨域访�
 
 项目的后端校验逻辑如下：
 
-- 使用`com.xunqi.gulimall.product.exception.GulimallExceptionControllerAdvice`统一处理异常（注意取消需要校验的Bean上的`BindingResult`注解，让异常抛出）。
+- 使用`com.example.mall.product.exception.MallExceptionControllerAdvice`统一处理异常（注意取消需要校验的Bean上的`BindingResult`注解，让异常抛出）。
 - 使用JSR303分组校验：给校验注解添加属性`groups`，指定什么情况下才需要进行校验，并使用`import org.springframework.validation.annotation.Validated`注解代替`Valid`注解。注意：默认情况下，没有指定分组的校验注解，在分组校验情况下不生效，只会在不分组（`@Validated`不指定`value`）的情况下生效。
 - 对于复杂的校验功能，使用JSR303自定义校验注解。方法是：编写自定义校验注解（在JSR303规范中，校验注解必须拥有三个属性：`message`、`groups`与`payload`）与自定义校验器（实现`javax.validation.ConstraintValidator`接口），并关联自定义的校验器与自定义的校验注解（通过在自定义校验注解上指定`@javax.validation.Constraint(validatedBy = [自定义校验器])`）。
 
