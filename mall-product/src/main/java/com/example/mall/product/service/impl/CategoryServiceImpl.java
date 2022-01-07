@@ -1,33 +1,23 @@
 package com.example.mall.product.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.example.mall.product.service.CategoryBrandRelationService;
-import com.example.mall.product.vo.Catalog2Vo;
-import org.redisson.Redisson;
-import org.redisson.api.RLock;
-import org.redisson.api.RReadWriteLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.utils.PageUtils;
 import com.example.common.utils.Query;
-
 import com.example.mall.product.dao.CategoryDao;
 import com.example.mall.product.entity.CategoryEntity;
+import com.example.mall.product.service.CategoryBrandRelationService;
 import com.example.mall.product.service.CategoryService;
+import com.example.mall.product.vo.Catalog2Vo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -35,12 +25,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Autowired
-    private Redisson redisson;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -83,6 +67,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     /**
      * 级联更新所有关联的数据
      */
+    @CacheEvict(value = "category", allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCascade(CategoryEntity category) {
@@ -109,29 +94,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
         return paths;
     }
+
+    @Cacheable(value = {"category"}, key = "#root.method.name", sync = true)
     @Override
     public List<CategoryEntity> getLevel1Categories() {
         return this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
     }
 
+    @Cacheable(value = "category",key = "#root.method.name")
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
-        RLock lock = redisson.getLock("catalogJson-lock");
-        lock.lock();
-        Map<String, List<Catalog2Vo>> dataFromDb;
-        try {
-            dataFromDb = getCatalogJsonFromDB();
-        } finally {
-            lock.unlock();
-        }
-        return dataFromDb;
-    }
-
-    private synchronized Map<String, List<Catalog2Vo>> getCatalogJsonFromDB() {
-        String catalogJSON = stringRedisTemplate.opsForValue().get("catalogJSON");
-        if (StringUtils.hasLength(catalogJSON)) {
-            return JSON.parseObject(catalogJSON, new TypeReference<Map<String, List<Catalog2Vo>>>() {});
-        }
         // 将数据库的多次查询变为一次
         List<CategoryEntity> selectList = this.baseMapper.selectList(null);
 
@@ -141,7 +113,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         // 封装数据
 
-        Map<String, List<Catalog2Vo>> parentCid = level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+        return level1Categories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
             // 每一个的一级分类，查到这个一级分类的二级分类
             List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
 
@@ -167,10 +139,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             return catalog2Vos;
         }));
-        // 写入缓存后才能释放锁，否则在单实例的情况下也会有多个线程的写操作
-        String valueJson = JSON.toJSONString(parentCid);
-        stringRedisTemplate.opsForValue().set("catalogJson", valueJson, 1, TimeUnit.DAYS);
-        return parentCid;
     }
 
     private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parentCid) {

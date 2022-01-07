@@ -1148,6 +1148,18 @@ Redisson支持的锁参考[分布式锁（Lock）和同步器（Synchronizer）]
 - 缓存的所有数据都有过期时间，数据过期下一次查询触发主动更新。
 - 读写数据的时候，加上分布式的读写锁。 只要写少，对性能影响不大。
 
+## [Spring Cache](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache)
+
+Spring从3.1开始定义了`org.springframework.cache.Cache`与`org.springframework.cache.CacheManager`接口来统一不同的缓存技术； 并支持使用JCache（JSR-107）注解简化开发：
+
+`Cache`接口为缓存的组件规范定义，包含缓存的各种操作集合。Cache接口下Spring提供了各种`xxxCache`的实现，如`RedisCache`、`EhCacheCache`、`ConcurrentMapCache`等。
+
+每次调用需要缓存功能的方法时，Spring会检查检查指定参数的指定的目标方法是否已经被调用过。如果是就直接从缓存中获取方法调用后的结果（不会调用该方法），如果没有就调用方法并缓存结果后返回给用户。要想缓存方法返回结果，只需要在方法上添加`org.springframework.cache.annotation.Cacheable`注解即可。默认情况下，缓存键自动生成（`[缓存名]::SimpleKey []`），采用JDK序列化机制将序列化后的值存到数据库，默认TTL为-1。
+
+这里使用Redis作为缓存：存储统一类型的数据，指定为同一分区（即`@Cacheable`指定相同的`value`），从而实现批量删除；分区名默认就是缓存的前缀。
+
+要想让Spring Cache解决缓存击穿问题，则在`@Cacheable`中设置`sync=true`（只是加了本地锁），对于其他注解，则不会加锁。因此，常规数据（读多写少，即时性与一致性要求不高的数据）可以使用Spring Cache，只要缓存的数据有过期时间即可；特殊数据则特殊设计。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
