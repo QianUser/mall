@@ -1160,6 +1160,22 @@ Spring从3.1开始定义了`org.springframework.cache.Cache`与`org.springframew
 
 要想让Spring Cache解决缓存击穿问题，则在`@Cacheable`中设置`sync=true`（只是加了本地锁），对于其他注解，则不会加锁。因此，常规数据（读多写少，即时性与一致性要求不高的数据）可以使用Spring Cache，只要缓存的数据有过期时间即可；特殊数据则特殊设计。
 
+# 商城业务
+
+## 检索服务
+
+将`mall-search/src/main/resources/static/search`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/search`目录下。
+
+为主机（IP：`192.168.227.131`）设置域名：`search.mall.com`。
+
+修改`/mydata/nginx/conf/conf.d/mall.conf`的`server.server_name`配置：
+
+```nginx
+server_name *.mall.com
+```
+
+然后修改网关配置。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
