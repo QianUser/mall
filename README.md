@@ -1171,10 +1171,32 @@ Spring从3.1开始定义了`org.springframework.cache.Cache`与`org.springframew
 修改`/mydata/nginx/conf/conf.d/mall.conf`的`server.server_name`配置：
 
 ```nginx
-server_name *.mall.com
+server_name mall.com *.mall.com;
 ```
 
 然后修改网关配置。
+
+商品检索有三个入口：
+
+- 主页选择分类进入商品检索。
+- 主页输入检索关键字展示检索页。
+- 进入搜索页后，选择筛选条件。
+
+检索条件与筛选条件包括：
+
+- 全文检索：`skuTitle`。
+- 排序：`saleCount`、`hotScore`、`skuPrice`。
+- 过滤：`hasStock`、`skuPrice`区间、`brandId`、`catalogId`、`attrs`。
+- 聚合：`attrs`。
+
+完整的参数示例：
+
+```
+keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
+&catalogId=1&attrs=1_3G:4G:5G&attrs=2_骁龙 845&attrs=4_高清屏
+```
+
+
 
 # 参考
 
