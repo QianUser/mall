@@ -909,8 +909,8 @@ POST /bank/_bulk
       },
       "skuImg": {
         "type": "keyword",
-        "index": false,
-        "doc_values": false
+        # "index": false,
+        # "doc_values": false
       },
       "saleCount": {
         "type": "long"
@@ -929,20 +929,20 @@ POST /bank/_bulk
       },
       "brandName": {
         "type": "keyword",
-        "index": false,
-        "doc_values": false
+        # "index": false,
+        # "doc_values": false
       },
       "brandImg": {
         "type": "keyword",
-        "index": false,
-        "doc_values": false
+        # "index": false,
+        # "doc_values": false
       },
       "catalogName": {
         "type": "keyword",
-        "index": false,
-        "doc_values": false
+        # "index": false,
+        # "doc_values": false
       },
-      "attrs": {
+      "attrs": {  # 嵌入式的属性，查询、聚合、分析都应该用嵌入式的方式
         "type": "nested",
         "properties": {
           "attrId": {
@@ -950,8 +950,8 @@ POST /bank/_bulk
           },
           "attrName": {
             "type": "keyword",
-            "index": false,
-            "doc_values": false
+            # "index": false,
+            # "doc_values": false
           },
           "attrValue": {
             "type": "keyword"
@@ -1195,6 +1195,160 @@ server_name mall.com *.mall.com;
 keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 &catalogId=1&attrs=1_3G:4G:5G&attrs=2_骁龙 845&attrs=4_高清屏
 ```
+
+查询示例如下（`GET product/_search`）：
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "skuTitle": "华为"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "catalogId": "225"
+          }
+        },
+        {
+          "terms": {
+            "brandId": [
+              "1",
+              "2",
+              "9"
+            ]
+          }
+        },
+        {
+          "nested": {
+            "path": "attrs",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "attrs.attrId": {
+                        "value": "15"
+                      }
+                    }
+                  },
+                  {
+                    "terms": {
+                      "attrs.attrValue": [
+                        "海思（Hisilicon）",
+                        "以官网信息为准"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "term": {
+            "hasStock": {
+              "value": "false"
+            }
+          }
+        },
+        {
+          "range": {
+            "skuPrice": {
+              "gte": 0,
+              "lte": 6000
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sort": {
+    "skuPrice": {
+      "order": "desc"
+    }
+  },
+  "from": 0,
+  "size": 3,
+  "highlight": {
+    "fields": {
+      "skuTitle": {}
+    },
+    "pre_tags": "<b style='color:red'>",
+    "post_tags": "</b>"
+  },
+  "aggs": {  # 聚合查询
+    "brand_agg": {
+      "terms": {
+        "field": "brandId",
+        "size": 10
+      },
+      "aggs": {
+        "brand_name_agg": {
+          "terms": {
+            "field": "brandName",
+            "size": 10
+          }
+        },
+        "brand_img_agg": {
+          "terms": {
+            "field": "brandImg",
+            "size": 10
+          }
+        }
+      }
+    },
+    "catalog_agg": {
+      "terms": {
+        "field": "catalogId",
+        "size": 10
+      },
+      "aggs": {
+        "catalog_name_agg": {
+          "terms": {
+            "field": "catalogName",
+            "size": 10
+          }
+        }
+      }
+    },
+    "attr_agg": {
+      "nested": {
+        "path": "attrs"
+      },
+      "aggs": {
+        "attr_id_agg": {
+          "terms": {
+            "field": "attrs.attrId",
+            "size": 10
+          },
+          "aggs": {
+            "attr_name_agg": {
+              "terms": {
+                "field": "attrs.attrName",
+                "size": 10
+              }
+            },
+            "attr_value_agg": {
+              "terms": {
+                "field": "attrs.attrValue",
+                "size": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+
 
 
 
