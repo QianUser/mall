@@ -1348,9 +1348,13 @@ keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 }
 ```
 
+## 商品详情
 
+为主机（IP：`192.168.227.131`）设置域名：`item.mall.com`。
 
+使用`CompletableFuture`实现任务的异步编排。
 
+将`mall-product/src/main/resources/static/item`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/item`目录下。
 
 # 参考
 
