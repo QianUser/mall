@@ -1364,6 +1364,10 @@ keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 
 将`mall-auth-server/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static`目录下。
 
+### 整合短信验证码
+
+进入[阿里云市场](https://market.aliyun.com/)，选择一个[短信验证码服务](https://market.aliyun.com/products/57126001/cmapi00037415.html#sku=yuncode3141500001)，使用方法参考其提供的API接口即可。
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)

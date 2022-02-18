@@ -3,6 +3,13 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    alicloud:
+      sms:
+        host: https://gyytz.market.alicloudapi.com
+        path: /sms/smsSend
+        sms-sign-id: 2e65b1bb3d054466b82f0c9d125465e2
+        templateId: 908e94ccf08b4476ba6c876d13f084ad
+        appcode: a7ba5168b64e4c609467757829e95f56
   application:
     name: mall-third-party
 

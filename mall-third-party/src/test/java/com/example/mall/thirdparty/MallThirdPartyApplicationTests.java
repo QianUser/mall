@@ -4,7 +4,9 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.example.mall.thirdparty.component.SmsComponent;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.FileInputStream;
@@ -12,6 +14,9 @@ import java.io.InputStream;
 
 @SpringBootTest
 class MallThirdPartyApplicationTests {
+
+	@Autowired
+	private SmsComponent smsComponent;
 
 	@Test
 	public void testUpload() throws Exception {
@@ -44,6 +49,11 @@ class MallThirdPartyApplicationTests {
 				ossClient.shutdown();
 			}
 		}
+	}
+
+	@Test
+	public void testSendCode() {
+		smsComponent.sendSmsCode("***********", "123456");
 	}
 
 }
