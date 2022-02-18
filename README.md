@@ -611,7 +611,7 @@ API网关出现的原因是微服务架构的出现，不同的微服务一般�
 
 启动`renren-fast`模块；启动前端项目`renren-fast-vue`。
 
-[^备注]: 如果编译报错`You aren‘t using a compiler supported by lombok, so lombok will not work and has been disabled.`，则进入`File`$\rightarrow$`Settings`$\rightarrow$`Build, Execution Deployment`$\rightarrow$`compiler`$，设置`Shared build process VM options`为`-Djps.track.ap.dependencies=false`。
+[^备注]: 如果编译报错`You aren‘t using a compiler supported by lombok, so lombok will not work and has been disabled.`，则进入`File`$\rightarrow$`Settings`$\rightarrow$`Build, Execution Deployment`$\rightarrow$`compiler`，设置`Shared build process VM options`为`-Djps.track.ap.dependencies=false`。
 
 在前端的菜单管理中添加一个一级目录（上级菜单为一级菜单）：商品系统，并在其中添加一个菜单：分类维护，路由为`product/category`（这些信息会记录到`mall_admin`数据库的`sys_menu`表中）。路由的`/`在URL中被替换为`-`，而相应的Vue文件则保存在`src\views\modules`文件夹中。例如以上菜单的URL为`product-category`，Vue文件路径为`src\views\modules\product\category.vue`。
 
@@ -1355,6 +1355,14 @@ keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 使用`CompletableFuture`实现任务的异步编排。
 
 将`mall-product/src/main/resources/static/item`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/item`目录下。
+
+## 认证服务
+
+创建SpringBoot模块（Group：`com.example.mall`，Artifact：`mall-auth-server`，Description：认证中心，Package：`com.example.mall.auth`），导入Spring Web、Thymeleaf、Spring Boot DevTools、Lombok、OpenFeign依赖。
+
+为主机（IP：`192.168.227.131`）设置域名：`auth.mall.com`。
+
+将`mall-auth-server/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static`目录下。
 
 # 参考
 
