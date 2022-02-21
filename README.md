@@ -1364,9 +1364,20 @@ keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 
 将`mall-auth-server/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static`目录下。
 
-### 整合短信验证码
+进入[阿里云市场](https://market.aliyun.com/)，选择一个[短信验证码服务](https://market.aliyun.com/products/57126001/cmapi00037415.html#sku=yuncode3141500001)，使用方法参考其提供的API接口即可，整合短信验证码功能。
 
-进入[阿里云市场](https://market.aliyun.com/)，选择一个[短信验证码服务](https://market.aliyun.com/products/57126001/cmapi00037415.html#sku=yuncode3141500001)，使用方法参考其提供的API接口即可。
+发送短信验证码要注意两点：
+
+- 验证码防刷，用户在指定时间（例如$60s$内不允许重复发送验证码）。
+- 验证码过期：验证码在指定时间（例如$15$分钟）后过期。
+
+注册要注意：
+
+- 数据格式校验。
+
+- 使用重定向，防止表单重复提交（因为转发会保持URL不变，可以不断刷新）。此时通过`RedirectAttributes`在重定向时携带数据（本质上是利用session原理，将数据放在session中，要跳转到下一个页面取出这个数据以后，session里面的数据就会删掉）。
+- 保存会员信息，确保用户名与手机之前未创建。
+- 保存密码的MD5而不是密码本身，注意使用盐值加密。这里使用`BCryptPasswordEncoder`实现盐值加密。
 
 # 参考
 
