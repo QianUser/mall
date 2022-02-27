@@ -1374,10 +1374,41 @@ keyword=小米&sort=saleCount_desc/asc&hasStock=0/1&skuPrice=400_1900&brandId=1
 注册要注意：
 
 - 数据格式校验。
-
 - 使用重定向，防止表单重复提交（因为转发会保持URL不变，可以不断刷新）。此时通过`RedirectAttributes`在重定向时携带数据（本质上是利用session原理，将数据放在session中，要跳转到下一个页面取出这个数据以后，session里面的数据就会删掉）。
 - 保存会员信息，确保用户名与手机之前未创建。
 - 保存密码的MD5而不是密码本身，注意使用盐值加密。这里使用`BCryptPasswordEncoder`实现盐值加密。
+
+### 社交登录
+
+使用OAuth2.0实现社交登录功能。
+
+OAuth（开放授权）是一个开放标准，允许用户授权第三方网站访问他们存储 在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方网站或分享他们 数据的所有内容。 
+
+OAuth2.0：对于用户相关的 OpenAPI（例如获取用户信息，动态同步，照片，日志，分 享等），为了保护用户数据的安全和隐私，第三方网站访问用户数据前都需要显式的向用户征求授权。
+
+OAuth2.0协议的授权流程如下：
+
+- 用户打开客户端以后，客户端要求用户给予授权。 
+- 用户同意给予客户端授权。
+- 客户端使用上一步获得的授权，向认证服务器申请令牌。 
+- 认证服务器对客户端进行认证以后，确认无误，同意发放令牌。
+- 客户端使用令牌，向资源服务器申请获取资源。
+- 资源服务器确认令牌无误，同意向客户端开放资源。
+
+进入[微博开放平台](https://open.weibo.com/)，选择`微连接`$\rightarrow$`网站接入`$\rightarrow$`立即接入`$\rightarrow$`创建新应用`，创建名为`mall_qian`的网页应用。
+
+在`我的应用`$\rightarrow$`应用信息`$\rightarrow$`高级信息`中填写`授权回调页`：`http://auth.mall.com/oauth2.0/weibo/success`与`取消授权回调页`：`http://mall.com/fail`。
+
+授权认证流程参考[授权机制](https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E)。核心是引导用户到授权页，然后使用`code`换取`Access Token`。注意，同一个用户的`code`只能使用一次；而`Access Token`则在一段时间内不会变化。另外，注意不要泄漏`client_secret`与`Access Token`（不要写在URL中）。
+
+在`我的应用`中可以查看授权的所有信息。
+
+为了实现社交登录功能，在数据库`mall_ums`的`ums_member`表中新增`varchar(255)`字段`social_uid`（社交用户的唯一id）、`varchar(255)`字段`access_token`（访问令牌）、`varchar(255)`字段`expires_in`（访问令牌的过期时间）。
+
+登录成功后，需要在首页（`mall.com`）显示用户信息。登录时，可以使用session保存用户信息，但是这会带来两个问题：
+
+- session不能跨不同域名共享（不同服务，session不能共享），这样会导致登录的信息无法在首页共享（域名从`auth.mall.com`$\rightarrow$`mall.com`）。
+- 同一个服务，复制多份，session不同步。
 
 # 参考
 

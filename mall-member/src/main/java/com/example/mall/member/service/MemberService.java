@@ -7,6 +7,7 @@ import com.example.mall.member.exception.PhoneException;
 import com.example.mall.member.exception.UsernameException;
 import com.example.mall.member.vo.MemberUserLoginVo;
 import com.example.mall.member.vo.MemberUserRegisterVo;
+import com.example.mall.member.vo.SocialUser;
 
 import java.util.Map;
 
@@ -28,5 +29,7 @@ public interface MemberService extends IService<MemberEntity> {
     void checkUserNameUnique(String userName) throws UsernameException;
 
     MemberEntity login(MemberUserLoginVo vo);
+
+    MemberEntity login(SocialUser socialUser) throws Exception;
 }
 
