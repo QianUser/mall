@@ -134,9 +134,9 @@ public class LoginController {
     @GetMapping(value = "/login.html")
     public String loginPage(HttpSession session) {
 
-        //从session先取出来用户的信息，判断用户是否已经登录过了
+        // 从session先取出来用户的信息，判断用户是否已经登录过了
         Object attribute = session.getAttribute(LOGIN_USER);
-        //如果用户没登录那就跳转到登录页面
+        // 如果用户没登录那就跳转到登录页面
         if (attribute == null) {
             return "login";
         } else {
@@ -145,13 +145,9 @@ public class LoginController {
 
     }
 
-
     @PostMapping(value = "/login")
     public String login(UserLoginVo vo, RedirectAttributes attributes, HttpSession session) {
-
-        //远程登录
         R login = memberFeignService.login(vo);
-
         if (login.getCode() == 0) {
             MemberResponseVo data = login.getData("data", new TypeReference<MemberResponseVo>() {});
             session.setAttribute(LOGIN_USER, data);
@@ -165,7 +161,7 @@ public class LoginController {
     }
 
 
-    @GetMapping(value = "/loguot.html")
+    @GetMapping(value = "/logout.html")
     public String logout(HttpServletRequest request) {
         request.getSession().removeAttribute(LOGIN_USER);
         request.getSession().invalidate();

@@ -1410,6 +1410,23 @@ OAuth2.0协议的授权流程如下：
 - session不能跨不同域名共享（不同服务，session不能共享），这样会导致登录的信息无法在首页共享（域名从`auth.mall.com`$\rightarrow$`mall.com`）。
 - 同一个服务，复制多份，session不同步。
 
+### 分布式session
+
+解决分布式下session共享问题的方案包括：
+
+- session复制：多个服务器交换彼此的数据，以达到数据同步的目的。Tomcat原生支持它，只需要修改配置文件即可。缺点在于session同步需要数据传输，占用大量网络带宽，降低了服务器群的业务处理能力；任意一台服务器保存的数据都是所有服务器的session总和，受到内存限制无法水平扩展更多的服务器。大型分布式集群情况下，由于所有服务器都全量保存数据，所以此方案不可取。
+- session存储在客户端cookie中。优点在于服务器不需要存储session，节省服务器资源。缺点在于每次http请求，携带用户在cookie中的完整信息，浪费网络带宽；session数据放在cookie中，cookie有长度限制 4K，不能保存大量信息；session数据放在cookie中，存在泄漏、篡改、 窃取等安全隐患。这种方案一般不会使用。
+- hash一致性：让特定的请求固定访问特定的服务器。优点在于只需要改nginx配置，不需要修改应用代码；只要hash属性的值分布是均匀的，多台服务器的负载是均衡；可以支持服务器水平扩展（session同步法是不行 的，受内存限制）。缺点在于session还是存在服务器中的，所以服务器重启可能导致部分session丢失，影响业务，如部分用户需要重新登录；如果服务器水平扩展，rehash后session重新分布，也会有一部分用户路由不到正确的session。但是以上缺点问题也不是很大，因为session本来都是有有效期的。
+- session统一存储：利用Redis等中间件存储session信息。优点在于没有安全隐患；可以水平扩展，只需要数据库/缓存水平切分即可；服务器重启或者扩容都不会有session丢失。缺点在于增加了一次网络调用，并且需要修改应用代码，如将所有的`getSession`方法替换为从Redis查数据的方式；Redis获取数据比内存慢很多。
+
+默认情况下，session不能跨不同域名共享。因此服务器为浏览器创建cookie时，要放大其作用域（例如从`auth.mall.com`$\rightarrow$`mall.com`）。
+
+这里使用[SpringSession](https://spring.io/projects/spring-session)解决分布式session问题。参考[Samples and Guides (Start Here)](https://docs.spring.io/spring-session/reference/samples.html)，如果要配合使用Redis，参考[HttpSession with Redis Guide](https://docs.spring.io/spring-session/reference/guides/boot-redis.html)与[Java-based Configuration](https://docs.spring.io/spring-session/reference/http-session.html#httpsession-redis-jc)。
+
+Redis序列化机制参考[HttpSession with Redis JSON serialization](https://github.com/spring-projects/spring-session/tree/2.7.0/spring-session-samples/spring-session-sample-boot-redis-json)等（默认采用JDK序列化机制），Cookie设置参考[Using `CookieSerializer`](https://docs.spring.io/spring-session/reference/api.html#api-cookieserializer)。
+
+
+
 # 参考
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
