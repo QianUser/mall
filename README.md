@@ -1425,9 +1425,29 @@ OAuth2.0协议的授权流程如下：
 
 Redis序列化机制参考[HttpSession with Redis JSON serialization](https://github.com/spring-projects/spring-session/tree/2.7.0/spring-session-samples/spring-session-sample-boot-redis-json)等（默认采用JDK序列化机制），Cookie设置参考[Using `CookieSerializer`](https://docs.spring.io/spring-session/reference/api.html#api-cookieserializer)。
 
+### 单点登录
 
+单点登录要实现“一处登录，处处可用”。由于cookie的作用域不能过大，在多系统中，单纯使用SpringSession是无法实现单点登录效果的（例如`a.com`与`b.com`共享cookie，需要`com`作用域，这个作用域过大，不应被允许）。
 
-# 参考
+单点登录的特点如下：
+
+- 系统域名可能不同。
+
+- 有一个中央认证服务器。
+- 其他系统（客户端）去中央认证服务器登录，登录成功跳转回来。
+- 只要有一个系统登录成功，其他系统都不用登录。
+- 全系统统一一个cookie。
+
+单点登录的流程如下：
+
+- 浏览器访问客户端（受保护的）页面，判断是否登录（是否有当前会话用户）。
+- 如果没有登录，则命令浏览器重定向到登录服务器进行登录。浏览器通过`redirect_url`参数指定（登录成功后的）重定向地址。
+- 登录服务器展示登录页，浏览器可以看到登录页。
+- 用户输入账号、密码进行登录。登录请求提交后，得到账号、密码、重定向地址。
+- 登录成功，跳转到重定向地址。注意在这之前要保存登录成功的用户，返回令牌给原客户端，同时要命令浏览器通过cookie记录登录信息。
+- 其他客户端访问受保护的页面，同样判断是否登录。如果没有登录，则命令浏览器重定向到登录服务器进行登录。浏览器发现存在cookie，不展示登录页，而是直接返回（同时返回令牌）。
+
+该逻辑可以作为过滤器实现。
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
