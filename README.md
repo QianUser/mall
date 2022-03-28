@@ -1449,5 +1449,13 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 
 该逻辑可以作为过滤器实现。
 
+## 购物车
+
+创建SpringBoot模块（Group：`com.example.mall`，Artifact：`mall-cart`，Description：购物车，Package：`com.example.mall.cart`），导入Spring Web、Thymeleaf、Spring Boot DevTools、Lombok、OpenFeign依赖。
+
+为主机（IP：`192.168.227.131`）设置域名：`cart.mall.com`。
+
+将`mall-cart/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/cart`目录下。
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
