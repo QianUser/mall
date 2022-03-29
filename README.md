@@ -1457,5 +1457,48 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 
 将`mall-cart/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/cart`目录下。
 
+### 数据模型
+
+购物车功能如下：
+
+- 用户可以使用购物车一起结算下单。
+- 给购物车添加商品。
+- 用户可以查询自己的购物车。
+- 用户可以在购物车中修改购买商品的数量。
+- 用户可以在购物车中删除商品。
+- 选中不选中商品。
+- 在购物车中展示商品优惠信息。
+- 提示购物车商品价格变化。
+
+用户可以在登录状态下将商品添加到**用户购物车（在线购物车）**，用户可以在未登录状态下将商品添加到**游客购物车（离线购物车/临时购物车）**。
+
+登录以后，会将临时购物车的数据全部合并过来，并清空临时购物车；否则，浏览器即使关闭，下次进入，临时购物车数据都在。
+
+用户购物车读写操作很频繁，因此不适合使用MySQL，考虑使用Redis，并指定Redis持久化。
+
+临时购物车数据可以存在：
+
+- Local Storage、Cookie、WebSQL中（客户端存储，后台不存），缺点是后台无法分析存储的数据，从而无法进行商品推荐等。
+- 存入Redis，项目采用。
+
+每个购物项都是一个对象，基本字段包括：
+
+```json
+{
+    skuId: 2131241,
+    check: true,
+    title: "Apple iphone.....",
+    defaultImage: "...",
+    price: 4999,
+    count: 1,
+    totalPrice: 4999,
+    skuSaleVO: {
+        // ...
+    }
+}
+```
+
+在Redis中，通过哈希结构存储购物车。键标识用户，哈希键标识商品id，哈希值标识购物项数据。
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
