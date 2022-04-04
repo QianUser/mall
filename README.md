@@ -1500,5 +1500,11 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 
 在Redis中，通过哈希结构存储购物车。键标识用户，哈希键标识商品id，哈希值标识购物项数据。
 
+### 用户身份鉴别
+
+临时用户通过`user-key`指定的cookie存储，并指定有效期；登录的用户则存放在session中。以上功能通过拦截器实现，并使用`ThreadLocal`实现同一个线程共享数据。
+
+
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
