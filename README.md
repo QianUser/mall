@@ -302,6 +302,24 @@ vi fenci.txt  # 保存单词
 docker restart elasticsearch
 ```
 
+## Docker安装[RabbitMQ](https://www.rabbitmq.com/)
+
+使用Docker安装[RabbitMQ](https://hub.docker.com/_/rabbitmq/tags)：
+
+```sh
+docker run -d --name rabbitmq -p 5671:5671 -p 5672:5672 -p 4369:4369 -p 25672:25672 -p 15671:15671 -p 15672:15672 rabbitmq:management
+```
+
+端口含义如下：
+
+- 4369、25672：Erlang发现&集群端口。
+- 5672、5671：AMQP端口。
+- 15672：web管理后台端口。
+- 61613、61614：STOMP协议端口。
+- 1883、8883：MQTT协议端口。
+
+端口含义参考[Networking and RabbitMQ](https://www.rabbitmq.com/networking.html)。
+
 设置Docker启动后容器自动启动：
 
 ```sh
@@ -311,6 +329,7 @@ sudo docker update redis --restart=always
 sudo docker update elasticsearch --restart=always
 sudo docker update kibana --restart=always
 sudo docker update nginx --restart=always
+sudo docker update rabbitmq --restart=always
 ```
 
 ## 安装插件
@@ -1504,7 +1523,9 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 
 临时用户通过`user-key`指定的cookie存储，并指定有效期；登录的用户则存放在session中。以上功能通过拦截器实现，并使用`ThreadLocal`实现同一个线程共享数据。
 
+### 购物车功能
 
+进入商品详情，点击添加商品到购物车（`/addCartItem`）后，注意重定向到新页面，防止刷新页面重复提交请求。这里使用`RedirectAttributes`的`addAttribute`方法将请求数据放在URL后（另外`addFlashAttribute`方法可以将数据放在session里面，但是只能取出一次）。
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds

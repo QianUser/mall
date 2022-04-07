@@ -1,5 +1,5 @@
 server:
-  port: 30000
+  port: 30001
 spring:
   application:
     name: mall-cart
@@ -10,3 +10,9 @@ spring:
 
   redis:
     host: 192.168.227.131
+
+mall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

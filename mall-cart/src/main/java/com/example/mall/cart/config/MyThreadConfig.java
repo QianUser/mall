@@ -1,4 +1,4 @@
-package com.example.mall.product.config;
+package com.example.mall.cart.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

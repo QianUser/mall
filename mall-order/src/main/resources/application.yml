@@ -10,6 +10,17 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: mall-order
+  rabbitmq:
+    host: 192.168.227.131
+    port: 5672
+    virtual-host: /
+    publisher-confirm-type: correlated  # 开启确认模式：发布消息成功到交换器后会触发回调方法
+    publisher-returns: true  # 开启发送端消息抵达队列的确认
+    template:
+      mandatory: true  # 只要抵达队列，以异步方式优先回调return确认
+    listener:
+      simple:
+        acknowledge-mode: manual  # 开启手动确认模式，只要没有ACK，则消息一直是unacked状态，消费者宕机，消息重新变为ready状态
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
