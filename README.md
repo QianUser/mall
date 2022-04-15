@@ -1527,5 +1527,11 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 
 进入商品详情，点击添加商品到购物车（`/addCartItem`）后，注意重定向到新页面，防止刷新页面重复提交请求。这里使用`RedirectAttributes`的`addAttribute`方法将请求数据放在URL后（另外`addFlashAttribute`方法可以将数据放在session里面，但是只能取出一次）。
 
+## 订单服务
+
+为主机（IP：`192.168.227.131`）设置域名：`order.mall.com`。
+
+将`mall-order/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static/order`目录下。
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds

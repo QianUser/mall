@@ -60,6 +60,11 @@ spring:
           predicates:
             - Host=cart.mall.com
 
+        - id: mall_order_route
+          uri: lb://mall-order
+          predicates:
+            - Host=order.mall.com
+
   application:
     name: mall-gateway
 
