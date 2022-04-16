@@ -23,6 +23,10 @@ spring:
         acknowledge-mode: manual  # 开启手动确认模式，只要没有ACK，则消息一直是unacked状态，消费者宕机，消息重新变为ready状态
   thymeleaf:
     cache: false
+  session:
+    store-type: redis
+  redis:
+    host: 192.168.227.131
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -33,3 +37,8 @@ mybatis-plus:
 server:
   port: 9000
 
+mall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
