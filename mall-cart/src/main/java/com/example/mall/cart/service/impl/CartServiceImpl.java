@@ -216,22 +216,21 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItemVo> getUserCartItems() {
-
         List<CartItemVo> cartItemVoList;
-        //获取当前用户登录的信息
+        // 获取当前用户登录的信息
         UserInfoTo userInfoTo = CartInterceptor.toThreadLocal.get();
-        //如果用户未登录直接返回null
+        // 如果用户未登录直接返回null
         if (userInfoTo.getUserId() == null) {
             return null;
         } else {
-            //获取购物车项
+            // 获取购物车项
             String cartKey = CART_PREFIX + userInfoTo.getUserId();
-            //获取所有的
+            // 获取所有的
             List<CartItemVo> cartItems = getCartItems(cartKey);
             if (cartItems == null) {
                 throw new CartExceptionHandler();
             }
-            //筛选出选中的
+            // 筛选出选中的
             cartItemVoList = cartItems.stream()
                     .filter(CartItemVo::getCheck)
                     .peek(item -> {
@@ -241,7 +240,6 @@ public class CartServiceImpl implements CartService {
                     })
                     .collect(Collectors.toList());
         }
-
         return cartItemVoList;
     }
 }

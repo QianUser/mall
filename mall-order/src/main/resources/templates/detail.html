@@ -17,7 +17,7 @@
 				<div class="min">
 					<ul class="header_ul_left">
 						<li class="glyphicon glyphicon-home">
-							<a href="/static/order/detail/shouye.html" class="aa">商城首页</a>
+							<a href="http://mall.com" class="aa">商城首页</a>
 						</li>
 						<li class="glyphicon glyphicon-map-marker">
 							<a href="/static/order/detail/javascript:;">北京</a>
@@ -131,20 +131,16 @@
 						</li>
 					</ul>
 					<ul class="header_ul_right">
-						<li>
+						<li style="width: 100px;">
 							<a th:if="${session.loginUser != null}">欢迎, [[${session.loginUser.nickname}]]</a>
 							<a th:if="${session.loginUser == null}" href="http://auth.mall.com/login.html">你好，请登录</a>
 						</li>
-						<li th:if="${session.loginUser == null}">
-							<a href="http://auth.mall.com/reg.html" class="li_2">免费注册</a>
-						</li>
-						<li th:if="${session.loginUser != null}">
-							<a href="http://auth.mall.com/logout.html" class="li_2">立即退出</a>
-						</li>
 						<li>
-							<a href="/static/order/detail/javascript:;" class="aa">我的订单</a> |</li>
+							<a th:if="${session.loginUser == null}" href="http://auth.mall.com/reg.html" class="li_2">免费注册</a>
+						</li>
+							<a href="http://order.mall.com/list.html" class="aa">我的订单</a> |</li>
 						<li class="jingdong" style="width:95px;">
-							<a href="/static/order/detail/javascript:;">我的商城</a><span class="glyphicon glyphicon-menu-down">|</span>
+							<a href="http://mall.com/">我的商城</a><span class="glyphicon glyphicon-menu-down">|</span>
 							<ol class="jingdong_ol">
 								<li>
 									<a href="/static/order/detail/javascript:;">待处理订单</a>
@@ -404,11 +400,11 @@
 				<div class="nav_min">
 					<div class="nav_top">
 						<div class="nav_top_one">
-							<a href="/static/order/detail/javascript:;"><img src="/static/order/detail/img/logo1.jpg" /></a>
+							<a href="http://mall.com/"><img src="/static/order/detail/img/logo1.jpg" /></a>
 						</div>
 						<div class="nav_top_two"><input type="text" /><button>搜索</button></div>
 						<div class="nav_top_three">
-							<a href="/static/order/detail/../JD_Shop/One_JDshop.html">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
+							<a href="http://cart.mall.com/cart.html">我的购物车</a><span class="glyphicon glyphicon-shopping-cart"></span>
 							<div class="nav_top_three_1">
 								<img src="/static/order/detail/img/44.png" />购物车还没有商品，赶紧选购吧！
 							</div>
@@ -425,7 +421,7 @@
 				</div>
 				<div class="content_myjd">
 					<div class="breadcrumb">
-						<a href="/static/order/detail///home.jd.com/">我的商城</a><span>&nbsp;&gt;&nbsp;<a href="/static/order/detail///order.jd.com/center/list.action">订单中心</a>&nbsp;&gt;&nbsp;<strong>订单：70716422916</strong></span></div>
+						<a href="/static/order/detail/home.jd.com/">我的商城</a><span>&nbsp;&gt;&nbsp;<a href="/static/order/detail/order.jd.com/center/list.action">订单中心</a>&nbsp;&gt;&nbsp;<strong>订单：70716422916</strong></span></div>
 				</div>
 				<div class="order-state01">
 					<div class="state-cont">
@@ -672,7 +668,7 @@
 												<div class="yf-box">
 													<div class="item"><label>基础运费：</label><span>￥12.00</span></div>
 													<div class="item"><label>续重运费：</label><span>￥0.00</span>
-														<a href="/static/order/detail///help.jd.com/user/issue/109-188.html" target="_blank"> 查看续重标准&gt;</a>
+														<a href="/static/order/detail/help.jd.com/user/issue/109-188.html" target="_blank"> 查看续重标准&gt;</a>
 													</div>
 												</div>
 											</div>
@@ -838,7 +834,7 @@
 						<tr>
 							<td><img src="/static/order/detail/image/5886ffa5Na5e39e2d.jpg"/>
 							<div style="display: inline-block;">
-								<p><b></b><a href="/static/order/detail///item.jd.com/1778772.html" class="a-link" target="_blank" title="伊利 风味发酵乳 原味酸奶100g*8（两件起售）">伊利 风味发酵乳 原味酸奶100g*8（两件起售）</a></p>
+								<p><b></b><a href="/static/order/detail/item.jd.com/1778772.html" class="a-link" target="_blank" title="伊利 风味发酵乳 原味酸奶100g*8（两件起售）">伊利 风味发酵乳 原味酸奶100g*8（两件起售）</a></p>
 							<p class="txt">益消 原味八连杯100g*</p>
 							</div>
 							</td>
@@ -912,7 +908,7 @@
 										<p class="p3"><button class="btn_jiaru"><b></b>加入购物车</button></p>
 									</li>
 								</ul>
-								
+
 							</li>
 							<li style="display: none;">
 								<ul class="ul2">
@@ -947,7 +943,7 @@
 										<p class="p3"><button class="btn_jiaru"><b></b>加入购物车</button></p>
 									</li>
 								</ul>
-								
+
 							</li>
 							<li style="display: none;">
 								<ul class="ul2">
@@ -982,20 +978,20 @@
 										<p class="p3"><button class="btn_jiaru"><b></b>加入购物车</button></p>
 									</li>
 								</ul>
-							</li>						
+							</li>
 						</ul>
 					</div>
 				</div>
 				<script src="/static/order/detail/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
 				<script type="text/javascript">
 					 $(".r1 span").mouseover(function(){
-						
+
 						 var index=$(this).index(); //获取被按下按钮的索引值，需要注意index是从0开始的
 						 console.log(index)
 						 $(this).css('background','red').siblings().css('background','white')
 						 $(this).css('color','white').siblings().css('color','black')
-						 $(".xuanxiangka .ul1>li").eq(index).css('display','block').siblings().css('display','none'); 
-						
+						 $(".xuanxiangka .ul1>li").eq(index).css('display','block').siblings().css('display','none');
+
 					});
 				</script>
 			</div>
@@ -1183,12 +1179,12 @@
                             <a href="/static/order/detail/#none" class="close">x</a>
                         </div>
                         <div class="problem-list">
-                            <a href="/static/order/detail///help.jd.com/user/issue/102-250.html">1、我的包裹几天可以收到？</a>
-                            <a href="/static/order/detail///help.jd.com/user/issue/103-983.html">2、我的地址都支持什么配送服务？</a>
-                            <a href="/static/order/detail///help.jd.com/user/issue/108-385.html">3、订单签收异常了怎么办？</a>
-                            <a href="/static/order/detail///help.jd.com/user/issue/75-244.html">4、下单后可以修改订单吗？</a>
-                            <a href="/static/order/detail///help.jd.com/user/issue/100-1014.html">5、自提点位置如何查询？</a>
-                            <a href="/static/order/detail///help.jd.com/user/index.html" class="more">更多问题&nbsp;&gt;</a>
+                            <a href="/static/order/detail/help.jd.com/user/issue/102-250.html">1、我的包裹几天可以收到？</a>
+                            <a href="/static/order/detail/help.jd.com/user/issue/103-983.html">2、我的地址都支持什么配送服务？</a>
+                            <a href="/static/order/detail/help.jd.com/user/issue/108-385.html">3、订单签收异常了怎么办？</a>
+                            <a href="/static/order/detail/help.jd.com/user/issue/75-244.html">4、下单后可以修改订单吗？</a>
+                            <a href="/static/order/detail/help.jd.com/user/issue/100-1014.html">5、自提点位置如何查询？</a>
+                            <a href="/static/order/detail/help.jd.com/user/index.html" class="more">更多问题&nbsp;&gt;</a>
                         </div>
                     </div>
 				</li>
@@ -1202,7 +1198,7 @@
 				<li class="i4"></li>
 			</ul>
 		</div>
-		
+
 		</div>
 		<script type="text/javascript">
 			$('.uls .i1').hover(function(){
@@ -1225,7 +1221,7 @@
 			})
 		</script>
 		<div class="erweima">
-			
+
 		</div>
 	</body>
 	<script src="/static/order/detail/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
