@@ -16,6 +16,7 @@ import com.example.mall.order.interceptor.LoginUserInterceptor;
 import com.example.mall.order.service.OrderItemService;
 import com.example.mall.order.to.OrderCreateTo;
 import com.example.mall.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -137,6 +138,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     /**
      * 提交订单
      */
+    @GlobalTransactional
     @Transactional(rollbackFor = Exception.class)
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {

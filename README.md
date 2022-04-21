@@ -1605,5 +1605,54 @@ Redis序列化机制参考[HttpSession with Redis JSON serialization](https://gi
 8. 保存订单所有数据到数据库。
 9. 远程锁定库存。锁定失败，则抛出异常，回滚订单信息，否则返回订单确认页。
 
+## 分布式事务
+
+在分布式事务下，上述的下单流程可能会出现不一致情况：
+
+- 订单服务异常，库存锁定不运行，全部回滚，撤销操作；库存服务事务自治，锁定失败全部回滚，订单感受到，继续回滚。也就是说每个微服务的失败都不会造成不一致现象。
+- 库存服务锁定成功了，但是网络原因返回数据途中问题，则远程调用出现问题，订单服务回滚。也就是说，远程调用“假失败”会造成不一致现象。
+- 库存服务锁定成功了，库存服务下面的逻辑发生故障，订单回滚了，但是库存不会回滚。也就是说，部分微服务的成功调用会造成不一致现象。
+
+这里使用[Seata](http://seata.io/zh-cn/)解决分布式事务问题，使用参考[快速开始](http://seata.io/zh-cn/docs/user/quickstart.html)。
+
+为每个数据库创建表`undo_log`：
+
+```sql
+CREATE TABLE `undo_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `branch_id` bigint(20) NOT NULL,
+  `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
+  `rollback_info` longblob NOT NULL,
+  `log_status` int(11) NOT NULL,
+  `log_created` datetime NOT NULL,
+  `log_modified` datetime NOT NULL,
+  `ext` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+```
+
+下载[seata](https://github.com/seata/seata/releases/)并安装。下载的seata版本尽可能与（spring-cloud-starter-alibaba-seata依赖间接）引入的seata-all版本一致。
+
+打开`conf/registry.conf`，修改配置：
+
+```
+type = "nacos"  # 指定注册中心
+
+nacos {
+  application = "localhost:8848"
+  ...
+}
+```
+
+默认情况下，seata的配置在`file.conf`文件下（通过`config`配置指定）。
+
+双击`/bin/seata-server.bat`，启动seata。
+
+使用`@GlobalTransactional`为分布式大事务入口开启全局事务，每一个远程的小事务使用`@Transactional`标注即可。
+
+以上采用的是AT模式，它不适合高并发场景（TCC模式也是如此），AT模式适用于后台管理系统保存商品信息。因此下单服务使用可靠消息+最终一致性方案。
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds

@@ -13,6 +13,7 @@ import com.example.mall.product.feign.SearchFeignService;
 import com.example.mall.product.feign.WareFeignService;
 import com.example.mall.product.service.*;
 import com.example.mall.product.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     /**
      *  TODO：高级部分完善后续
      */
+    @GlobalTransactional
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveSpuInfo(SpuSaveVo vo) {
