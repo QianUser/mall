@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.example.common.constant.CartConstant;
 import com.example.common.exception.NoStockException;
+import com.example.common.to.OrderTo;
 import com.example.mall.order.entity.OrderItemEntity;
 import com.example.mall.order.enume.OrderStatusEnum;
 import com.example.mall.order.feign.ProductFeignService;
@@ -18,6 +19,7 @@ import com.example.mall.order.to.OrderCreateTo;
 import com.example.mall.order.vo.*;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -65,6 +67,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private OrderItemService orderItemService;
@@ -185,10 +190,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
                 R r = wmsFeignService.orderLockStock(lockVo);
                 if (r.getCode() == 0) {
-                    //锁定成功
+                    // 锁定成功
                     responseVo.setOrder(order.getOrder());
+                    rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order);
                     // 删除购物车里的数据
-//                    redisTemplate.delete(CartConstant.CART_PREFIX + memberResponseVo.getId());
+                    redisTemplate.delete(CartConstant.CART_PREFIX + memberResponseVo.getId());
                     return responseVo;
                 } else {
                     // 锁定失败
@@ -199,6 +205,42 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             } else {
                 responseVo.setCode(2);
                 return responseVo;
+            }
+        }
+    }
+
+    /**
+     * 按照订单号获取订单信息
+     */
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        return this.baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+    }
+
+    /**
+     * 关闭订单
+     */
+    @Override
+    public void closeOrder(OrderEntity orderEntity) {
+        // 关闭订单之前先查询一下数据库，判断此订单状态是否已支付
+        OrderEntity orderInfo = this.getOne(new QueryWrapper<OrderEntity>().
+                eq("order_sn",orderEntity.getOrderSn()));
+
+        if (orderInfo.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
+            // 代付款状态进行关单
+            OrderEntity orderUpdate = new OrderEntity();
+            orderUpdate.setId(orderInfo.getId());
+            orderUpdate.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(orderUpdate);
+            // 发送消息给MQ
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(orderInfo, orderTo);
+
+            try {
+                // TODO 确保每个消息发送成功，给每个消息做好日志记录，(给数据库保存每一个详细信息)保存每个消息的详细信息
+                rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderTo);
+            } catch (Exception e) {
+                // TODO 定期扫描数据库，重新发送失败的消息
             }
         }
     }

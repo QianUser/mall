@@ -1654,5 +1654,79 @@ nacos {
 
 以上采用的是AT模式，它不适合高并发场景（TCC模式也是如此），AT模式适用于后台管理系统保存商品信息。因此下单服务使用可靠消息+最终一致性方案。
 
+## 订单服务优化
+
+这里使用RabbitMQ的延时队列实现库存锁定：
+
+- 订单下单，给交换机`stock-event-exchange`发送消息，指定的路由键为`stock.locked`。交换机根据`stock.locked`绑定关系，将消息发给队列`stock.delay.queue`。
+- 队列`stock.delay.queue`是延时队列，到期后消息通过`stock.release`路由键发给交换机`stock-event-exchange`，交换机根据`stock.release`绑定关系，将消息发给队列`stock.release.stock.queue`。
+- 解锁库存服务监听队列`stock.release.stock.queue`。
+
+两种情况下需要解库存：
+
+- 下订单成功，订单过期没有支付被系统自动取消，或者被用户手动取消，都要解锁库存。
+- 下订单成功，库存锁定成功，接下来的库存业务调用失败，导致订单回滚。之前锁定的库存就要解锁。此时事务回滚，不用解锁。
+
+锁定库存信息记录在`mall_wms`数据库的`wms_ware_order_task`与`wms_ware_order_task_detail`表中。
+
+订单关单实现如下：
+
+- 订单创建成功，给交换机`order-event-exchange`发送消息，指定的路由键为`order.create.order`。交换机根据`order.create.order`绑定关系，将消息发给队列`order.delay.queue`。
+- 队列`order.delay.queue`是延时队列，到期后消息通过`order.release.order`路由键发给交换机`order-event-exchange`，交换机根据`order.release.order`绑定关系，将消息发给队列`order.release.stock.queue`。
+- 订单关闭服务监听消息`order.release.stock.queue`。
+
+注意订单解锁后必须发送消息给用于库存锁定的RabbitMQ，保证订单解锁后库存状态恢复到原始状态：
+
+- 订单释放后，立即给交换机`order-event-exchange`发送消息，指定的路由键为`order.release.other`。交换机根据`order.release.other`绑定关系，将消息发给队列`order.release.stock.queue`。
+
+### 消息丢失、积压、重复等解决方案
+
+#### 消息丢失
+
+消息发送出去，由于网络问题没有抵达RabbitMQ服务器：
+
+- 做好容错方法（`try-catch`），发送消息可能会网络失败，失败后要有重试机制，可记录消息到数据库，采用定期扫描重发的方式。
+- 做好日志记录，每个消息状态是否都被服务器收到都应该记录。
+- 做好定期重发，如果消息没有发送成功，定期去数据库扫描未成功的消息进 行重发。
+
+消息抵达Broker，Broker要将消息写入磁盘（持久化）才算成功，此时Broker尚 未持久化完成，宕机：
+
+- Publisher也必须加入确认回调机制，确认成功的消息，修改数据库消息状态。
+
+自动ACK的状态下，消费者收到消息，但没来得及消费完就宕机：
+
+- 一定开启手动ACK，消费成功才移除，失败或者没来得及处理就noAck并重 新入队。
+
+#### 消息重复
+
+消息在以下情况下可能重复：
+
+- 消息消费成功，事务已经提交，`ack`时，机器宕机。导致没有`ack`成功，Broker的消息重新由`unack`变为`ready`，并发送给其他消费者。
+
+- 消息消费失败，由于重试机制，自动又将消息发送出去。
+
+解决方法如下：
+
+- 消费者的业务消费接口应该设计为幂等性的。比如扣库存有 工作单的状态标志。
+
+- 使用防重表，发送消息每一个都有业务的唯 一标识，处理过就不用处理。
+
+- RabbitMQ的每一个消息都有`redelivered`字段，可以获取消息是否是被重新投递过来的，而不是第一次投递过来的。
+
+#### 消息积压
+
+消费者宕机、消费者消费能力不足、发送者发送流量太大都可能导致消息积压，解决方法如下：
+
+- 上线更多的消费者，进行正常消费。
+- 上线专门的队列消费服务，将消息先批量取出来，记录数据库，离线慢慢处理。
+
+### 支付
+
+这里使用支付宝完成支付功能。完整流程参考[电脑网站支付](https://open.alipay.com/api/detail?code=I1080300001000041203)，参考[Demo](https://opendocs.alipay.com/open/270/106291) [Java](https://gw.alipayobjects.com/os/bmw-prod/43bbc4ba-4d71-402f-a03b-778dfef047a8.zip)版本。
+
+这里使用内网穿透技术解决外网无法访问本机`localhost`的问题。它的原理是服务商为每台主机分配一个（隶属于该服务商的）域名，这样外网访问该域名时，服务商的DNS服务器就可以将该访问转发给对应的主机。
+
+
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
