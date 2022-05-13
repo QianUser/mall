@@ -27,6 +27,9 @@ spring:
     store-type: redis
   redis:
     host: 192.168.227.131
+  mvc:
+    format:
+      date: yyyy-MM-dd HH:mm:ss
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -42,3 +45,13 @@ mall:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+
+alipay:
+  app_id: 2021000121687734
+  merchant_private_key: [保密]
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlBzImtiLvTGCzjaHW7sbXQ48BShHLjDjuMm6fDmLtWFarvuKSxZ+Qtfr2qnOgEGe88sOuzpHqwRpj5sRGCPnoJgf6SL9SiXIiAzMOc1kaMAFkUC2bVUcl33H8Yj1MCdnWQeLDjq0i38Qe5vompxsywjszgXiWrZvl50V8nQB80WmVRqfudoCGuHUTLXVdI0SOTZoXQdRKmcBizTL5U1d6QgYT20a5UJssard4AJjLrEvTqToN2e4HRvVE8n+6L1utai6lrP+K56sZTGDdf22PtEwEcZsnG8AInO6/4VkgtV0F1Txv4iwKeRsu+8VCEhSStR0plNoYTLRitnB4UBgiQIDAQAB
+  notify_url: http://localhost/payed/notify  # 应该使用外网地址，映射到order.mall.com
+  return_url: http://member.mall.com/memberOrder.html
+  sign_type: RSA2
+  charset: utf-8
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do

@@ -1722,11 +1722,23 @@ nacos {
 
 ### 支付
 
-这里使用支付宝完成支付功能。完整流程参考[电脑网站支付](https://open.alipay.com/api/detail?code=I1080300001000041203)，参考[Demo](https://opendocs.alipay.com/open/270/106291) [Java](https://gw.alipayobjects.com/os/bmw-prod/43bbc4ba-4d71-402f-a03b-778dfef047a8.zip)版本。
+这里使用支付宝完成支付功能。完整流程参考[电脑网站支付](https://open.alipay.com/api/detail?code=I1080300001000041203)，参考[Demo](https://opendocs.alipay.com/open/270/106291) [Java](https://gw.alipayobjects.com/os/bmw-prod/43bbc4ba-4d71-402f-a03b-778dfef047a8.zip)版本。这里使用它的[沙箱环境](https://open.alipay.com/develop/sandbox/app)。
 
-这里使用内网穿透技术解决外网无法访问本机`localhost`的问题。它的原理是服务商为每台主机分配一个（隶属于该服务商的）域名，这样外网访问该域名时，服务商的DNS服务器就可以将该访问转发给对应的主机。
+要想使用支付功能，首选根据[开发工具包（SDK）下载](https://opendocs.alipay.com/open/02np95)导入相应依赖。
 
+可以使用内网穿透技术解决外网无法访问本机`localhost`的问题。它的原理是服务商为每台主机分配一个（隶属于该服务商的）域名，这样外网访问该域名时，服务商的DNS服务器就可以将该访问转发给对应的主机（这里暂时未实现）。
 
+将`mall-member/src/main/resources/static`目录下的所有资源放到虚拟机的`/mydata/nginx/html/static`目录下。
+
+为主机（IP：`192.168.227.131`）设置域名：`member.mall.com`。
+
+如果用户一直停留在支付页不支付，订单过期才支付，可能造成订单支付，但是库存解锁的不一致现象，此时可以使用支付宝的自动收单功能，一段时间不支付，就不能支付了。
+
+由于库存解锁与订单支付不是原子操作，可能出现订单支付后库存也解锁的现象，此时可以在订单解锁后，手动调用支付宝收单功能。
+
+如果遇到其他问题，则可以每天晚上闲时下载支付宝对账单，一一进行对账
+
+## 秒杀
 
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds
