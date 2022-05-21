@@ -1740,5 +1740,39 @@ nacos {
 
 ## 秒杀
 
+为主机（IP：`192.168.227.131`）设置域名：`seckill.mall.com`。
+
+秒杀涉及`mall_sms`数据库的`sms_seckill_session`与`sms_seckill_sku_relation`表，前者表示秒杀活动信息，后者表示秒杀商品信息。
+
+创建SpringBoot模块（Group：`com.example.mall`，Artifact：`mall-seckill`，Description：秒杀，Package：`com.example.mall.seckill`），导入Spring Web、Spring Boot DevTools、Lombok、OpenFeign、Spring Data Redis依赖。
+
+### 秒杀商品上架
+
+所谓商品上架，就是将将要上架的商品信息缓存到Redis中。这里需要缓存如下数据：
+
+- 秒杀活动信息：`List`结构，以开始时间与结束时间为键，值为当前活动关联的所有商品`id`。
+- 商品详细信息：`Hash`结构，以活动`id`+商品`skuId`为哈希键，以商品详细信息为哈希值。
+
+秒杀的商品都有一个随机码，随机码只要在秒杀开始时才会发布，没有随机码发送秒杀请求无效。这样可以防止秒杀时自动化工具无限发请求攻击秒杀系统。
+
+秒杀系统还需存储信号量到Redis，表示商品拥有的库存。注意其键为商品随机码，防止恶意请求减去信号量。
+
+通过定时任务实现将最近三天的商品上架。这里使用SpringBoot整合定时任务，使用的cron表达式参考[Quartz](http://www.quartz-scheduler.org/)的文档，SpringBoot支持的cron表达式与标准的cron表达式略有不同：
+
+- 不支持年。
+- `1`-`7`分别代表周一到周日，而不是周日到周六。
+
+默认情况下，但是任务是阻塞的。要想不阻塞，可以：
+
+- 让业务以异步方式运行，且自己提交到线程池。
+- 设置`spring.task.scheduling.pool.size`，增大线程池数量（默认为1），这个配置不太好使。
+- 让定时任务异步执行：使用`@org.springframework.scheduling.annotation.EnableAsync`开启异步任务功能，然后给希望异步执行的方法上标注`@org.springframework.scheduling.annotation.Async`注解。本质上也是将任务提交到线程池。
+
+这里采用最后一种方案。
+
+在分布式系统下，多个系统可能同时启动定时任务，执行商品上架，从而发生并发问题。因此需要可以为上架商品功能增加分布式锁，只有一个系统能够执行商品上架。
+
+
+
 [^1]: [Java项目《谷粒商城》Java架构师 | 微服务 | 大型电商项目](https://www.bilibili.com/video/BV1np4y1C7Yf)
 [^1]: 资料：[谷粒商城](https://pan.baidu.com/s/18FuF760AYt3kILGWCmXVEA#list/path=%2F)，提取码：yyds

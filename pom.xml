@@ -25,6 +25,7 @@
         <module>mall-test-sso-client</module>
         <module>mall-test-sso-server</module>
         <module>mall-cart</module>
+        <module>mall-seckill</module>
     </modules>
 
 </project>
