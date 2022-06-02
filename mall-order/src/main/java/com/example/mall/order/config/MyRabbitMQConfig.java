@@ -60,4 +60,22 @@ public class MyRabbitMQConfig {
                 null);
     }
 
+    /**
+     * 商品秒杀队列
+     */
+    @Bean
+    public Queue orderSecKillOrderQueue() {
+        return new Queue("order.seckill.order.queue", true, false, false);
+    }
+
+    @Bean
+    public Binding orderSecKillOrderQueueBinding() {
+        return new Binding(
+                "order.seckill.order.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.seckill.order",
+                null);
+    }
+
 }
